@@ -8,6 +8,7 @@ import {
   Package,
   MapPin,
   Newspaper,
+  Star,
   Mail,
   CalendarCheck,
 } from "lucide-react";
@@ -15,12 +16,13 @@ import {
 export default async function AdminDashboard() {
   const user = (await getSession())!;
 
-  const [categories, packages, destinations, blogs, newInquiries, pendingBookings] =
+  const [categories, packages, destinations, blogs, pendingReviews, newInquiries, pendingBookings] =
     await Promise.all([
       prisma.category.count(),
       prisma.package.count(),
       prisma.destination.count(),
       prisma.blog.count(),
+      prisma.review.count({ where: { status: "PENDING" } }),
       prisma.inquiry.count({ where: { status: "NEW" } }),
       prisma.booking.count({ where: { status: "PENDING" } }),
     ]);
@@ -30,6 +32,7 @@ export default async function AdminDashboard() {
     { key: "packages", label: "Packages", value: packages, href: "/admin/packages", icon: Package },
     { key: "destinations", label: "Destinations", value: destinations, href: "/admin/destinations", icon: MapPin },
     { key: "blogs", label: "Blog Posts", value: blogs, href: "/admin/blogs", icon: Newspaper },
+    { key: "reviews", label: "Pending Reviews", value: pendingReviews, href: "/admin/reviews", icon: Star },
     { key: "inquiries", label: "New Inquiries", value: newInquiries, href: "/admin/inquiries", icon: Mail },
     { key: "bookings", label: "Pending Bookings", value: pendingBookings, href: "/admin/bookings", icon: CalendarCheck },
   ] as const;

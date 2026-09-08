@@ -1,38 +1,44 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 /**
  * Global scroll effects for the public site:
  *  - reveal-on-scroll for [data-reveal] elements
  *  - parallax translate for [data-parallax] elements (attr value = speed)
- * Mounted once in the site layout.
+ * Re-scans on every route change so client-side navigations pick up new nodes.
  */
 export function SiteEffects() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Reveal on scroll
-    const revealEls = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    // Reveal on scroll (re-query after the new page has painted).
     let observer: IntersectionObserver | null = null;
-    if (revealEls.length) {
+    const revealTimer = window.setTimeout(() => {
+      const revealEls = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]:not(.is-visible)"));
+      if (!revealEls.length) return;
       if (prefersReduced) {
         revealEls.forEach((el) => el.classList.add("is-visible"));
-      } else {
-        observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                (entry.target as HTMLElement).classList.add("is-visible");
-                observer?.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.15 },
-        );
-        revealEls.forEach((el) => observer!.observe(el));
+        return;
       }
-    }
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              (entry.target as HTMLElement).classList.add("is-visible");
+              observer?.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -5% 0px" },
+      );
+      revealEls.forEach((el) => observer!.observe(el));
+      // Safety net: reveal anything still hidden after 1.2s (e.g. if it never intersects).
+      window.setTimeout(() => revealEls.forEach((el) => el.classList.add("is-visible")), 1200);
+    }, 60);
 
     // Parallax
     const parallaxEls = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"));
@@ -58,12 +64,13 @@ export function SiteEffects() {
     }
 
     return () => {
+      window.clearTimeout(revealTimer);
       observer?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

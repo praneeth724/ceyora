@@ -47,6 +47,22 @@ export default async function HomePage() {
     prisma.blog.findMany({ where: { isPublished: true }, orderBy: { publishedAt: "desc" }, take: 3 }),
   ]);
 
+  const approvedReviews = await prisma.review.findMany({
+    where: { status: "APPROVED" },
+    orderBy: { createdAt: "desc" },
+    take: 3,
+  });
+  const testimonials = approvedReviews.length
+    ? approvedReviews.map((r) => ({
+        text: r.message,
+        name: r.name,
+        from: r.country || "Traveller",
+        trip: r.category || "Verified guest",
+        img: r.profileImg || "",
+        rating: r.rating,
+      }))
+    : TESTIMONIALS.map((t) => ({ ...t, rating: 5 }));
+
   // Build the gallery reel from available images (destinations + packages).
   const reelItems: ReelItem[] = [];
   for (const d of destinations) {
@@ -283,12 +299,21 @@ export default async function HomePage() {
             <p style={{ fontSize: 14.5, lineHeight: 1.8, color: "var(--txt-mid)", maxWidth: 340, margin: 0 }}>Written by people who travelled with us this season, unedited.</p>
           </div>
           <div className="grid-3" style={{ gap: 20 }}>
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} data-reveal="1" style={{ position: "relative", display: "flex", flexDirection: "column", gap: 20, padding: "34px 30px 30px", border: "1px solid var(--bd-soft)", borderRadius: 18, background: "var(--panel)" }}>
+            {testimonials.map((t, i) => (
+              <div key={i} data-reveal="1" style={{ position: "relative", display: "flex", flexDirection: "column", gap: 16, padding: "34px 30px 30px", border: "1px solid var(--bd-soft)", borderRadius: 18, background: "var(--panel)" }}>
                 <span className="site-serif" style={{ position: "absolute", top: 16, right: 26, fontSize: 76, lineHeight: 1, color: "rgba(2,136,209,.22)" }}>&ldquo;</span>
+                <span style={{ display: "flex", gap: 3 }}>
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <svg key={s} viewBox="0 0 24 24" width="16" height="16" fill={s < t.rating ? "#F5A623" : "none"} stroke={s < t.rating ? "#F5A623" : "var(--txt-faint)"} strokeWidth="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+                  ))}
+                </span>
                 <span style={{ fontSize: 14.5, lineHeight: 1.9, color: "var(--txt)" }}>{t.text}</span>
                 <span style={{ marginTop: "auto", paddingTop: 20, borderTop: "1px solid var(--bd-soft)", display: "flex", alignItems: "center", gap: 14 }}>
-                  <span style={{ width: 52, height: 52, borderRadius: "50%", flex: "0 0 52px", backgroundImage: `url('${t.img}')`, backgroundSize: "cover", backgroundPosition: "center", border: "1px solid rgba(2,136,209,.45)" }} />
+                  {t.img ? (
+                    <span style={{ width: 52, height: 52, borderRadius: "50%", flex: "0 0 52px", backgroundImage: `url('${t.img}')`, backgroundSize: "cover", backgroundPosition: "center", border: "1px solid rgba(2,136,209,.45)" }} />
+                  ) : (
+                    <span className="site-serif" style={{ width: 52, height: 52, borderRadius: "50%", flex: "0 0 52px", display: "grid", placeItems: "center", background: "rgba(2,136,209,.16)", border: "1px solid rgba(2,136,209,.45)", color: "var(--gold)", fontSize: 20 }}>{t.name.charAt(0).toUpperCase()}</span>
+                  )}
                   <span style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                     <span style={{ fontSize: 14.5, color: "var(--head)" }}>{t.name}</span>
                     <span style={{ fontSize: 12, color: "var(--txt-mid)" }}>{t.from}</span>

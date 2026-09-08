@@ -15,9 +15,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { SidebarBrand, SidebarNav } from "./sidebar";
+import { LogoutButton } from "./logout-button";
 import type { SessionUser } from "@/lib/permissions";
 
-export function Topbar({ user }: { user: SessionUser }) {
+export function Topbar({
+  user,
+  logo,
+  siteName = "Ceyora",
+}: {
+  user: SessionUser;
+  logo?: string | null;
+  siteName?: string;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -43,10 +52,15 @@ export function Topbar({ user }: { user: SessionUser }) {
           >
             <Menu className="h-5 w-5" />
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0">
+          <SheetContent side="left" className="flex w-64 flex-col p-0">
             <SheetTitle className="sr-only">Navigation</SheetTitle>
-            <SidebarBrand />
-            <SidebarNav user={user} onNavigate={() => setOpen(false)} />
+            <SidebarBrand logo={logo} siteName={siteName} />
+            <div className="flex-1 overflow-y-auto">
+              <SidebarNav user={user} onNavigate={() => setOpen(false)} />
+            </div>
+            <div className="border-t p-3">
+              <LogoutButton />
+            </div>
           </SheetContent>
         </Sheet>
         <span className="text-sm font-medium text-slate-500">

@@ -1,119 +1,83 @@
 import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
 import type { SiteSettings } from "@/lib/site";
 
+const ICONS: Record<string, string> = {
+  facebook: "M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z",
+  instagram: "M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z",
+  youtube: "M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z",
+  whatsapp: "M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-71.7 18.8L70.7 358l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.3 184.6z",
+};
+
+const SocialIcon = ({ href, name, viewBox }: { href: string; name: string; viewBox: string }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={name} style={{ width: 40, height: 40, border: "1px solid var(--bd)", borderRadius: 4, display: "grid", placeItems: "center", color: "var(--txt)" }}>
+    <svg viewBox={viewBox} width="17" height="17" fill="currentColor" aria-hidden="true"><path d={ICONS[name]} /></svg>
+  </a>
+);
+
 export function Footer({ settings }: { settings: SiteSettings }) {
-  const socials = [
-    { href: settings.facebook, label: "Facebook" },
-    { href: settings.instagram, label: "Instagram" },
-    { href: settings.twitter, label: "Twitter" },
-    { href: settings.youtube, label: "YouTube" },
-  ].filter((s) => s.href);
-
   return (
-    <footer
-      style={{
-        marginTop: 80,
-        borderTop: "1px solid var(--bd-soft)",
-        background: "var(--bg-alt)",
-      }}
-    >
-      <div className="site-container" style={{ paddingTop: 56, paddingBottom: 40 }}>
-        <div
-          style={{
-            display: "grid",
-            gap: 32,
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          }}
-        >
+    <footer style={{ position: "relative", borderTop: "1px solid var(--bd-soft)", padding: "68px 0 0", overflow: "hidden", background: "var(--bg-alt)" }}>
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "url('https://commons.wikimedia.org/wiki/Special:FilePath/Horton_Plains.jpg?width=1920')", backgroundSize: "cover", backgroundPosition: "center 40%", opacity: 0.35 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,30,40,.85) 0%, rgba(4,30,40,.7) 45%, var(--bg-alt) 100%)" }} />
+      <div className="site-container" style={{ position: "relative" }}>
+        <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.3fr", gap: 48, paddingBottom: 52 }}>
+          {/* Brand */}
           <div>
-            <p className="site-serif" style={{ fontSize: 22, color: "var(--head)", margin: 0 }}>
-              {settings.siteName}
+            <div style={{ marginBottom: 20 }}>
+              {settings.logoFull || settings.logoMark ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={(settings.logoFull || settings.logoMark)!} alt={settings.siteName} style={{ width: 150, maxWidth: "100%", height: "auto", display: "block" }} />
+              ) : (
+                <span className="site-serif" style={{ fontSize: 24, color: "var(--head)", letterSpacing: ".04em" }}>{settings.siteName}</span>
+              )}
+            </div>
+            <p style={{ fontSize: 13.5, lineHeight: 1.85, color: "var(--txt)", maxWidth: 300, margin: "0 0 20px" }}>
+              Journeys that connect you with the heart and soul of Sri Lanka. Locally owned, responsibly run.
             </p>
-            {settings.tagline && (
-              <p style={{ marginTop: 8, fontSize: 14, color: "var(--txt-mid)" }}>{settings.tagline}</p>
-            )}
-            {socials.length > 0 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 }}>
-                {socials.map((s, i) => (
-                  <a
-                    key={i}
-                    href={s.href!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      padding: "7px 14px",
-                      borderRadius: 999,
-                      border: "1px solid var(--bd)",
-                      color: "var(--gold-l)",
-                      fontSize: 12,
-                    }}
-                  >
-                    {s.label}
-                  </a>
-                ))}
-              </div>
-            )}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <SocialIcon href={settings.facebook || "https://facebook.com"} name="facebook" viewBox="0 0 512 512" />
+              <SocialIcon href={settings.instagram || "https://instagram.com"} name="instagram" viewBox="0 0 448 512" />
+              <SocialIcon href={settings.youtube || "https://youtube.com"} name="youtube" viewBox="0 0 576 512" />
+              <SocialIcon href={settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}` : "https://wa.me/94771234567"} name="whatsapp" viewBox="0 0 448 512" />
+            </div>
           </div>
 
-          <div>
-            <p style={{ fontSize: 12, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--txt-faint)", marginBottom: 14 }}>
-              Explore
-            </p>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 10, fontSize: 14 }}>
-              <li><Link href="/packages">Tour Packages</Link></li>
-              <li><Link href="/categories">Categories</Link></li>
-              <li><Link href="/destinations">Destinations</Link></li>
-              <li><Link href="/blog">Journal</Link></li>
-            </ul>
+          {/* Quick links */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ fontSize: 11.5, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 6 }}>Quick links</div>
+            {[["/", "Home"], ["/destinations", "Destinations"], ["/categories", "Tour Categories"], ["/packages", "All Packages"], ["/gallery", "Gallery"], ["/blog", "Journal"], ["/about", "About Us"], ["/contact", "Contact"]].map(([h, l]) => (
+              <Link key={l} href={h} style={{ fontSize: 13.5, color: "var(--txt)" }}>{l}</Link>
+            ))}
           </div>
 
-          <div>
-            <p style={{ fontSize: 12, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--txt-faint)", marginBottom: 14 }}>
-              Company
-            </p>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 10, fontSize: 14 }}>
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="/book">Book a Trip</Link></li>
-            </ul>
+          {/* Top destinations */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ fontSize: 11.5, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 6 }}>Top destinations</div>
+            {[["sigiriya", "Sigiriya"], ["nuwara-eliya", "Nuwara Eliya"], ["mirissa", "Mirissa"], ["yala", "Yala National Park"], ["galle", "Galle"], ["ella", "Ella"]].map(([s, l]) => (
+              <Link key={l} href={`/destinations/${s}`} style={{ fontSize: 13.5, color: "var(--txt)" }}>{l}</Link>
+            ))}
           </div>
 
+          {/* Newsletter */}
           <div>
-            <p style={{ fontSize: 12, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--txt-faint)", marginBottom: 14 }}>
-              Get in touch
-            </p>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 12, fontSize: 14 }}>
-              {settings.email && (
-                <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  <Mail size={15} /> <a href={`mailto:${settings.email}`}>{settings.email}</a>
-                </li>
-              )}
-              {settings.phone && (
-                <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  <Phone size={15} /> <a href={`tel:${settings.phone}`}>{settings.phone}</a>
-                </li>
-              )}
-              {settings.address && (
-                <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  <MapPin size={15} /> {settings.address}
-                </li>
-              )}
-            </ul>
+            <div style={{ fontSize: 11.5, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--gold)", marginBottom: 18 }}>Newsletter</div>
+            <p style={{ fontSize: 13.5, lineHeight: 1.8, color: "var(--txt)", margin: "0 0 16px" }}>Seasonal offers and travel inspiration, once a month.</p>
+            <div style={{ display: "flex", gap: 8 }}>
+              <input placeholder="Enter your email" className="site-input" style={{ flex: 1, borderRadius: 4 }} />
+              <span style={{ width: 44, height: 44, borderRadius: "50%", background: "var(--gold)", color: "#fff", display: "grid", placeItems: "center", fontSize: 15, cursor: "pointer", flexShrink: 0 }}>→</span>
+            </div>
+            <div style={{ marginTop: 22, fontSize: 13.5, lineHeight: 1.9, color: "var(--txt)" }}>
+              {settings.phone || "+94 77 123 4567"}<br />{settings.email || "hello@ceyora.com"}
+            </div>
           </div>
         </div>
 
-        <div
-          style={{
-            marginTop: 40,
-            paddingTop: 20,
-            borderTop: "1px solid var(--bd-soft)",
-            fontSize: 12.5,
-            color: "var(--txt-faint)",
-            textAlign: "center",
-          }}
-        >
-          © {new Date().getFullYear()} {settings.siteName}. All rights reserved.
+        <div style={{ borderTop: "1px solid var(--bd-soft)", padding: "22px 0 30px", display: "flex", justifyContent: "space-between", gap: 20, flexWrap: "wrap", fontSize: 12.5, color: "var(--txt-mid)" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 20px" }}>
+            <span>© {new Date().getFullYear()} {settings.siteName}. All rights reserved.</span>
+            <span>Designed and Developed By <a href="https://www.nbcodezone.com/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--gold-l)" }}><strong>NB CODE ZONE</strong></a>.</span>
+          </div>
+          <span style={{ display: "flex", gap: 24 }}><span>Privacy Policy</span><span>Terms &amp; Conditions</span></span>
         </div>
       </div>
     </footer>

@@ -217,3 +217,29 @@ model SiteSetting {
 
   @@map("site_setting")
 }
+
+// ----------------------------------------------------------------------------
+// Reviews — collected from guests, approved by admins, shown on the site
+// ----------------------------------------------------------------------------
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Review {
+  id         Int          @id @default(autoincrement())
+  name       String
+  country    String?
+  category   String?      // traveller type: Solo, Couple, Family, Group…
+  rating     Int          @default(5)
+  message    String       @db.Text
+  profileImg String?      @map("profile_img")
+  photos     Json         @default("[]")
+  status     ReviewStatus @default(PENDING)
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  @@map("review")
+}

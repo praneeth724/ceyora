@@ -233,6 +233,16 @@
 }
 @media (max-width: 350px) { .island-story-grid { grid-template-columns: 1fr; } }
 
+.pkg-main-grid { display: grid; grid-template-columns: 1.55fr 0.8fr; gap: 52px; align-items: start; }
+@media (max-width: 900px) { .pkg-main-grid { grid-template-columns: 1fr; } }
+
+.footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1.3fr; }
+@media (max-width: 1024px) { .footer-grid { grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr !important; } }
+
+.blog-lead { grid-template-columns: 1.15fr 1fr; }
+@media (max-width: 860px) { .blog-lead { grid-template-columns: 1fr; } }
+
 .about-strip { grid-template-columns: repeat(6, 1fr); }
 @media (max-width: 1024px) { .about-strip { grid-template-columns: repeat(3, 1fr) !important; } }
 @media (max-width: 560px) { .about-strip { grid-template-columns: repeat(2, 1fr) !important; } }

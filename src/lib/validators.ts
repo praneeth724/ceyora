@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-const optionalUrl = z.string().trim().max(500).optional().or(z.literal(""));
+const optionalUrl = z.string().trim().max(500).nullish().or(z.literal(""));
+const optionalStr = (max: number) => z.string().trim().max(max).nullish().or(z.literal(""));
 
 // ---- Categories ----------------------------------------------------------
 
@@ -84,16 +85,16 @@ export const blogSchema = z.object({
 
 export const settingsSchema = z.object({
   siteName: z.string().trim().min(1).max(120),
-  tagline: z.string().trim().max(200).optional().or(z.literal("")),
+  tagline: optionalStr(200),
   logoFull: optionalUrl,
   logoMark: optionalUrl,
   logoWord: optionalUrl,
   favicon: optionalUrl,
   heroImage: optionalUrl,
-  email: z.string().trim().max(160).optional().or(z.literal("")),
-  phone: z.string().trim().max(60).optional().or(z.literal("")),
-  address: z.string().trim().max(300).optional().or(z.literal("")),
-  whatsapp: z.string().trim().max(60).optional().or(z.literal("")),
+  email: optionalStr(160),
+  phone: optionalStr(60),
+  address: optionalStr(300),
+  whatsapp: optionalStr(60),
   facebook: optionalUrl,
   instagram: optionalUrl,
   twitter: optionalUrl,
@@ -117,6 +118,29 @@ export const updateAdminSchema = z.object({
   role: z.enum(["ADMIN", "SUPER_ADMIN"]).optional(),
   access: z.array(z.string()).optional(),
   isActive: z.boolean().optional(),
+});
+
+// ---- Reviews -------------------------------------------------------------
+
+export const reviewSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  country: optionalStr(80),
+  category: optionalStr(60),
+  rating: z.coerce.number().int().min(1).max(5).default(5),
+  message: z.string().trim().min(1).max(4000),
+  profileImg: optionalUrl,
+  photos: z.array(z.string()).optional().default([]),
+  status: z.enum(["PENDING", "APPROVED", "REJECTED"]).optional().default("APPROVED"),
+});
+
+export const publicReviewSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  country: optionalStr(80),
+  category: optionalStr(60),
+  rating: z.coerce.number().int().min(1).max(5),
+  message: z.string().trim().min(1).max(4000),
+  profileImg: optionalUrl,
+  photos: z.array(z.string()).max(6).optional().default([]),
 });
 
 // ---- Public forms --------------------------------------------------------
