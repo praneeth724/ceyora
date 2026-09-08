@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ceyora Travels — Full-stack Tourism Platform
 
-## Getting Started
+A full-stack Sri Lanka tourism website built with **Next.js 16 (App Router)**, **Prisma + MySQL**,
+**Tailwind + shadcn/ui**, and **Cloudinary** for image uploads. It has a dynamic public site and a
+secured admin panel with role-based permissions and a super-admin.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Admin panel** (`/admin`, sign in at `/login`)
+- Categories, Packages, Destinations, Blogs — full create / edit / delete with image uploads
+- Packages link to a Category and to many Destinations (many-to-many)
+- Inbox for public **Inquiries** and **Bookings** (view + status + delete)
+- **Site Settings** — change site name, logo(s), favicon, hero image, contact info & socials
+- **Admins** (super-admin only) — create admins and grant per-section permissions
+- Role model: `SUPER_ADMIN` (full access + manages admins) and `ADMIN` (limited by an access list)
+
+**Public site** (`/`)
+- Home, Categories, Category detail, Packages, Package detail, Destinations, Destination detail,
+  Blog, Blog post, About, Contact, Book — all driven by the database
+- Site name / logo pulled live from Site Settings
+- Contact & Booking forms post to the admin inbox
+
+**Security**
+- JWT session in an httpOnly cookie (`jose`), passwords hashed with `bcryptjs`
+- Edge `proxy.ts` guards `/admin` and `/api/admin`
+- Per-page guards + per-endpoint permission checks (`requirePermission`, `requireSuperAdmin`)
+
+## Setup
+
+### 1. Requirements
+- Node.js 18.18+ (built on Node 24)
+- A MySQL server (MAMP / XAMPP / standalone). Create a database, e.g. `ceyora`.
+
+### 2. Environment
+Copy `.env.example` to `.env` and fill it in:
+
+```
+DATABASE_URL="mysql://root:root@localhost:3306/ceyora"
+JWT_SECRET="a-long-random-secret"
+# Cloudinary (Dashboard → Settings → API Keys)
+CLOUDINARY_CLOUD_NAME="..."
+CLOUDINARY_API_KEY="..."
+CLOUDINARY_API_SECRET="..."
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="..."
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Image uploads need the three `CLOUDINARY_*` values. Without them the app runs, but uploading an
+> image returns a clear "Cloudinary is not configured" message.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Install & initialise
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run db:migrate      # create tables
+npm run db:seed         # create the super admin + sample data
+npm run dev             # http://localhost:3000
+```
 
-## Learn More
+Default super admin (change the password after first login):
+- **Email:** `admin@ceyora.com`
+- **Password:** `Admin@123`
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
+- `npm run dev` — start the dev server
+- `npm run build` / `npm run start` — production build & serve
+- `npm run db:migrate` — apply Prisma migrations
+- `npm run db:seed` — seed super admin, site settings and sample data
+- `npm run db:studio` — open Prisma Studio to inspect data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Data model (relationships)
+- **Category** 1 — many **Package**
+- **Package** many — many **Destination**
+- **Blog**, **Inquiry**, **Booking**, **SiteSetting**, **User** are standalone
+  (`Booking` optionally references a `Package`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project layout
+```
+prisma/schema.prisma            # database schema
+src/lib/                        # prisma, auth, session, cloudinary, permissions, validators
+src/proxy.ts                    # edge middleware (route protection)
+src/app/(site)/                 # public website
+src/app/admin/                  # admin dashboard (guarded)
+src/app/api/auth/               # login / logout / me
+src/app/api/admin/              # protected CRUD + upload endpoints
+src/app/api/public/             # public inquiry & booking submissions
+src/components/site/            # public UI
+src/components/admin/           # admin UI
+deploy/                         # original static design reference
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The public site's look (deep-ocean palette, Playfair Display + Poppins) is derived from the
+static design in `deploy/`.

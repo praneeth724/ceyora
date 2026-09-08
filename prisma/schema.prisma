@@ -1,0 +1,219 @@
+// Ceyora Travels — Prisma schema
+// Datasource: MySQL. Client: prisma-client-js.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------------------------
+// Auth / users
+// ----------------------------------------------------------------------------
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(ADMIN)
+  // List of permission keys this admin may access, e.g. ["categories","packages"].
+  // SUPER_ADMIN ignores this and has full access.
+  access    Json     @default("[]")
+  avatar    String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user")
+}
+
+// ----------------------------------------------------------------------------
+// Catalogue: categories, packages, destinations
+// ----------------------------------------------------------------------------
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  description String    @db.Text
+  coverImage  String?   @map("cover_image")
+  cardImage   String?   @map("card_image")
+  isPopular   Boolean   @default(false) @map("is_popular")
+  sortOrder   Int       @default(0) @map("sort_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  packages    Package[]
+
+  @@map("category")
+}
+
+model Package {
+  id          Int     @id @default(autoincrement())
+  title       String
+  slug        String  @unique
+  // Marketing sub-title / short description shown on cards.
+  summary     String? @db.Text
+  badge       String?
+  days        Int     @default(1)
+  nights      Int     @default(0)
+  price       Float   @default(0)
+  // Optional deal / discount.
+  dealPercent Int?    @map("deal_percent")
+  dealPrice   Float?  @map("deal_price")
+  isFeatured  Boolean @default(false) @map("is_featured")
+  heroImage   String? @map("hero_image")
+  overview    String? @db.Text
+  // JSON arrays for rich content.
+  gallery     Json    @default("[]")
+  journey     Json    @default("[]") // day-by-day: [{ day, title, description }]
+  route       Json    @default("[]") // [{ from, to, note }]
+  included    Json    @default("[]") // string[]
+  excluded    Json    @default("[]") // string[]
+  faq         Json    @default("[]") // [{ q, a }]
+
+  categoryId Int?      @map("category_id")
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // Many-to-many: a package visits several destinations.
+  destinations Destination[] @relation("PackageDestinations")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  bookings Booking[]
+
+  @@index([categoryId])
+  @@map("package")
+}
+
+model Destination {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  tag         String?
+  subtitle    String?  @db.Text
+  description String   @map("description") @db.Text
+  shortDesc   String?  @map("short_desc") @db.Text
+  hero        String?
+  gallery     Json     @default("[]")
+  rating      String?
+  // Map pin position (percentages), matching the static site's island map.
+  pinTop      String?  @map("pin_top")
+  pinLeft     String?  @map("pin_left")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  packages Package[] @relation("PackageDestinations")
+
+  @@map("destination")
+}
+
+// ----------------------------------------------------------------------------
+// Blog / journal
+// ----------------------------------------------------------------------------
+
+model Blog {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  category    String?
+  excerpt     String?  @db.Text
+  content     String   @db.Text
+  coverImage  String?  @map("cover_image")
+  author      String?
+  isPublished Boolean  @default(true) @map("is_published")
+  publishedAt DateTime @default(now()) @map("published_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("blog")
+}
+
+// ----------------------------------------------------------------------------
+// Inbox: contact inquiries + package bookings
+// ----------------------------------------------------------------------------
+
+enum InquiryStatus {
+  NEW
+  READ
+  RESPONDED
+  CLOSED
+}
+
+model Inquiry {
+  id        Int           @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String        @db.Text
+  status    InquiryStatus @default(NEW)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  @@map("inquiry")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Booking {
+  id          Int           @id @default(autoincrement())
+  name        String
+  email       String
+  phone       String?
+  country     String?
+  travelers   Int?
+  arrivalDate String?       @map("arrival_date")
+  returnDate  String?       @map("return_date")
+  message     String?       @db.Text
+  packageId   Int?          @map("package_id")
+  package     Package?      @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  packageName String?       @map("package_name")
+  status      BookingStatus @default(PENDING)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  @@index([packageId])
+  @@map("booking")
+}
+
+// ----------------------------------------------------------------------------
+// Site settings (single row) — logo, name, contact info
+// ----------------------------------------------------------------------------
+
+model SiteSetting {
+  id        Int      @id @default(1)
+  siteName  String   @default("CEYORA TRAVELS") @map("site_name")
+  tagline   String?
+  logoFull  String?  @map("logo_full")
+  logoMark  String?  @map("logo_mark")
+  logoWord  String?  @map("logo_word")
+  favicon   String?
+  heroImage String?  @map("hero_image")
+  email     String?
+  phone     String?
+  address   String?
+  whatsapp  String?
+  facebook  String?
+  instagram String?
+  twitter   String?
+  youtube   String?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_setting")
+}
