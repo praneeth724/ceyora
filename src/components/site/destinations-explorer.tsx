@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useTheme } from "./theme";
 
 export interface DestItem {
   slug: string;
@@ -29,6 +30,8 @@ export function DestinationsExplorer({ destinations }: { destinations: DestItem[
   }, [destinations]);
   const [filter, setFilter] = useState("All");
   const [hover, setHover] = useState<number | null>(null);
+  const { theme } = useTheme();
+  const mapSrc = theme === "light" ? "/site/map-light.webp" : "/site/map-dark.webp";
 
   const shown = filter === "All" ? destinations : destinations.filter((d) => d.tag === filter);
 
@@ -67,9 +70,7 @@ export function DestinationsExplorer({ destinations }: { destinations: DestItem[
 
           <div style={{ position: "relative", justifySelf: "center", width: "100%", maxWidth: 430 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="mapimg-dark" src="/site/map-dark.webp" alt="Map of Sri Lanka" style={{ width: "100%", display: "block" }} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="mapimg-light" src="/site/map-light.webp" alt="" style={{ width: "100%", display: "block", position: "absolute", inset: 0 }} />
+            <img src={mapSrc} alt="Map of Sri Lanka" style={{ width: "100%", display: "block" }} />
             {destinations.map((d, i) => {
               const top = d.pinTop || FALLBACK[i % FALLBACK.length].top;
               const left = d.pinLeft || FALLBACK[i % FALLBACK.length].left;
@@ -83,11 +84,22 @@ export function DestinationsExplorer({ destinations }: { destinations: DestItem[
                   style={{ position: "absolute", top, left, transform: "translate(-50%,-50%)" }}
                   aria-label={d.name}
                 >
-                  <span style={{ position: "relative", display: "grid", placeItems: "center" }}>
+                  <span style={{ position: "relative", display: "grid", placeItems: "center", zIndex: on ? 5 : 1 }}>
                     <span style={{ position: "absolute", width: 26, height: 26, borderRadius: "50%", background: on ? "rgba(2,136,209,.4)" : "rgba(2,136,209,.16)", animation: "pulse 3s ease-in-out infinite" }} />
-                    <span style={{ position: "relative", width: 11, height: 11, borderRadius: "50%", background: on ? "#81D4FA" : "#0288D1", border: "1.5px solid var(--bg)" }} />
+                    <span style={{ position: "relative", width: 12, height: 12, borderRadius: "50%", background: on ? "#81D4FA" : "#0288D1", border: "2px solid #fff", boxShadow: "0 1px 4px rgba(2,12,18,.5)" }} />
                   </span>
-                  <span style={{ position: "absolute", left: "50%", top: -18, transform: "translateX(-50%)", whiteSpace: "nowrap", fontSize: 11, color: on ? "var(--head)" : "var(--txt-mid)", textShadow: "0 1px 6px rgba(2,12,18,.6)" }}>{d.name}</span>
+                  <span
+                    style={{
+                      position: "absolute", left: "50%", top: -8, transform: "translate(-50%,-100%)",
+                      whiteSpace: "nowrap", fontSize: 10, fontWeight: 500, letterSpacing: ".02em",
+                      padding: "3px 8px", borderRadius: 6,
+                      background: on ? "#0288D1" : "rgba(4,30,40,.82)", color: "#fff",
+                      border: "1px solid rgba(2,136,209,.55)", boxShadow: "0 2px 6px rgba(2,12,18,.45)",
+                      pointerEvents: "none", zIndex: on ? 6 : 2,
+                    }}
+                  >
+                    {d.name}
+                  </span>
                 </Link>
               );
             })}

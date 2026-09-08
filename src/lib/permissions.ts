@@ -6,6 +6,7 @@ export const PERMISSIONS = [
   { key: "packages", label: "Packages" },
   { key: "destinations", label: "Destinations" },
   { key: "blogs", label: "Blogs" },
+  { key: "gallery", label: "Gallery" },
   { key: "reviews", label: "Reviews" },
   { key: "inquiries", label: "Inquiries" },
   { key: "bookings", label: "Bookings" },

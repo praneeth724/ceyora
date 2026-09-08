@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useTheme } from "./theme";
 
 export interface MapDest {
   slug: string;
@@ -29,6 +30,8 @@ const FALLBACK = [
 
 export function MapExplorer({ destinations }: { destinations: MapDest[] }) {
   const [selected, setSelected] = useState(0);
+  const { theme } = useTheme();
+  const mapSrc = theme === "light" ? "/site/map-light.webp" : "/site/map-dark.webp";
   if (destinations.length === 0) return null;
   const sel = destinations[selected];
 
@@ -38,9 +41,7 @@ export function MapExplorer({ destinations }: { destinations: MapDest[] }) {
       <div style={{ position: "relative", width: "100%", maxWidth: 430, justifySelf: "center" }}>
         <div style={{ position: "relative" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="mapimg-dark" src="/site/map-dark.webp" alt="Map of Sri Lanka" style={{ width: "100%", display: "block" }} />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="mapimg-light" src="/site/map-light.webp" alt="Map of Sri Lanka" style={{ width: "100%", display: "block", position: "absolute", inset: 0 }} />
+          <img src={mapSrc} alt="Map of Sri Lanka" style={{ width: "100%", display: "block" }} />
           {destinations.map((d, i) => {
             const top = d.pinTop || FALLBACK[i % FALLBACK.length].top;
             const left = d.pinLeft || FALLBACK[i % FALLBACK.length].left;

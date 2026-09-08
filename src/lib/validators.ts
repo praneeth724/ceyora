@@ -27,6 +27,8 @@ export const destinationSchema = z.object({
   rating: z.string().trim().max(10).optional().or(z.literal("")),
   pinTop: z.string().trim().max(10).optional().or(z.literal("")),
   pinLeft: z.string().trim().max(10).optional().or(z.literal("")),
+  latitude: z.coerce.number().nullable().optional(),
+  longitude: z.coerce.number().nullable().optional(),
   isFeatured: z.boolean().optional().default(false),
 });
 
@@ -36,10 +38,13 @@ const journeyStep = z.object({
   day: z.coerce.number().int().optional(),
   title: z.string().trim().default(""),
   description: z.string().trim().default(""),
+  image: z.string().trim().optional().default(""),
 });
+// A route stop with real-world coordinates (shown on the Leaflet map).
 const routeStep = z.object({
-  from: z.string().trim().default(""),
-  to: z.string().trim().default(""),
+  name: z.string().trim().default(""),
+  lat: z.coerce.number().nullable().optional(),
+  lng: z.coerce.number().nullable().optional(),
   note: z.string().trim().optional().default(""),
 });
 const faqItem = z.object({
@@ -118,6 +123,14 @@ export const updateAdminSchema = z.object({
   role: z.enum(["ADMIN", "SUPER_ADMIN"]).optional(),
   access: z.array(z.string()).optional(),
   isActive: z.boolean().optional(),
+});
+
+// ---- Gallery -------------------------------------------------------------
+
+export const gallerySchema = z.object({
+  title: optionalStr(160),
+  image: z.string().trim().min(1).max(500),
+  sortOrder: z.coerce.number().int().optional().default(0),
 });
 
 // ---- Reviews -------------------------------------------------------------

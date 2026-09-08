@@ -24,6 +24,18 @@ const IMG: Record<string, string> = {
   ravana: W("Ravana_Falls.jpg"), hikkaduwa: W("Hikkaduwa.jpg"), colombo: W("Colombo_skyline.jpg"),
 };
 
+// Real-world coordinates for Sri Lankan places used in destinations and routes.
+const PLACES: Record<string, [number, number]> = {
+  Colombo: [6.9271, 79.8612], Sigiriya: [7.957, 80.7603], Anuradhapura: [8.3114, 80.4037],
+  Dambulla: [7.8567, 80.649], Kandy: [7.2906, 80.6337], "Nuwara Eliya": [6.9497, 80.7891],
+  "Horton Plains": [6.801, 80.806], Ella: [6.8667, 81.0466], Galle: [6.0329, 80.2168],
+  Unawatuna: [6.0097, 80.2496], Mirissa: [5.9483, 80.4589], Hikkaduwa: [6.1395, 80.1063],
+  Udawalawe: [6.439, 80.889], Yala: [6.3728, 81.5185], Bundala: [6.19, 81.22],
+  Negombo: [7.2083, 79.8358], Trincomalee: [8.5874, 81.2152], Nilaveli: [8.7, 81.19],
+  "Pigeon Island": [8.729, 81.19], "Arugam Bay": [6.84, 81.836], "Whiskey Point": [6.89, 81.83],
+  Kumana: [6.57, 81.66], Jaffna: [9.6615, 80.0255], Sinharaja: [6.4, 80.5], Polonnaruwa: [7.9403, 81.0188],
+};
+
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 const num = (s: string) => Number(String(s).replace(/[^0-9.]/g, "")) || 0;
 const pct = (v: number, max: number) => `${Math.round((v / max) * 1000) / 10}%`;
@@ -151,7 +163,9 @@ async function main() {
     const created = await prisma.destination.create({
       data: {
         name: d.name, slug: slug(d.name), tag: d.tag, subtitle: d.blurb, description: d.long, shortDesc: d.blurb,
-        hero: d.img, gallery: [], rating: d.rating, pinLeft: pct(d.x, 420), pinTop: pct(d.y, 620), isFeatured: i < 6,
+        hero: d.img, gallery: [], rating: d.rating, pinLeft: pct(d.x, 420), pinTop: pct(d.y, 620),
+        latitude: PLACES[d.name]?.[0] ?? null, longitude: PLACES[d.name]?.[1] ?? null,
+        isFeatured: i < 6,
       },
     });
     destId[d.name] = created.id;
@@ -162,8 +176,10 @@ async function main() {
     const price = num(p.price);
     const was = num(p.was);
     const hasDeal = was > price;
-    const journey = p.itinerary.map((d) => ({ day: Number(d.day), title: d.title, description: `${d.body}${d.stay && d.stay !== "Departure" ? `\n\nStay: ${d.stay}` : ""}` }));
-    const route = p.stops.slice(0, -1).map((s, i) => ({ from: s, to: p.stops[i + 1], note: "" }));
+    const journey = p.itinerary.map((d) => ({ day: Number(d.day), title: d.title, description: `${d.body}${d.stay && d.stay !== "Departure" ? `\n\nStay: ${d.stay}` : ""}`, image: "" }));
+    const route = p.stops
+      .filter((s) => PLACES[s])
+      .map((s) => ({ name: s, lat: PLACES[s][0], lng: PLACES[s][1], note: "" }));
     const destConnect = p.stops
       .map((s) => destId[s])
       .filter((id): id is number => Boolean(id))

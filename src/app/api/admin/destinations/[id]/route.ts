@@ -46,6 +46,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
         rating: d.rating || null,
         pinTop: d.pinTop || null,
         pinLeft: d.pinLeft || null,
+        latitude: d.latitude ?? null,
+        longitude: d.longitude ?? null,
         isFeatured: d.isFeatured,
       },
     });

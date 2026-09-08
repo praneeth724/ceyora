@@ -109,6 +109,9 @@ model Destination {
   // Map pin position (percentages), matching the static site's island map.
   pinTop      String?  @map("pin_top")
   pinLeft     String?  @map("pin_left")
+  // Real-world coordinates for the interactive Leaflet map.
+  latitude    Float?
+  longitude   Float?
   isFeatured  Boolean  @default(false) @map("is_featured")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -226,6 +229,21 @@ enum ReviewStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+// ----------------------------------------------------------------------------
+// Gallery — images managed by admins, shown on the public gallery page
+// ----------------------------------------------------------------------------
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  image     String
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("gallery_image")
 }
 
 model Review {

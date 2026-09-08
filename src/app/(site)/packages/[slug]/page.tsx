@@ -6,9 +6,11 @@ import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/site";
 import { FaqAccordion, type FaqItem } from "@/components/site/faq-accordion";
 import { HomePackageCard } from "@/components/site/home-cards";
+import { RouteMapLoader } from "@/components/site/route-map-loader";
+import { DayTimeline } from "@/components/site/day-timeline";
 
-interface JourneyStep { day?: number; title: string; description: string }
-interface RouteStep { from: string; to: string; note?: string }
+interface JourneyStep { day?: number; title: string; description: string; image?: string }
+interface RouteStep { name?: string; from?: string; to?: string; lat?: number | null; lng?: number | null; note?: string }
 
 function arr<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
@@ -43,7 +45,15 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
   const excluded = arr<string>(pkg.excluded);
   const faq = arr<FaqItem>(pkg.faq);
   const heroBg = pkg.heroImage || "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_tea_plantation.jpg?width=1800";
-  const stops = route.length ? [route[0].from, ...route.map((r) => r.to)] : [];
+  // Route stops with real coordinates (for the Leaflet map); support old {from,to} shape as a text fallback.
+  const mapStops = route
+    .filter((r) => typeof r.lat === "number" && typeof r.lng === "number" && r.name)
+    .map((r) => ({ name: r.name!, lat: r.lat as number, lng: r.lng as number, note: r.note }));
+  const stopNames = route.length
+    ? route.map((r) => r.name).filter(Boolean).length
+      ? (route.map((r) => r.name).filter(Boolean) as string[])
+      : [route[0].from, ...route.map((r) => r.to)].filter(Boolean) as string[]
+    : [];
 
   return (
     <div>
@@ -75,31 +85,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
               </>
             )}
 
-            {journey.length > 0 && (
-              <>
-                <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 20, marginBottom: 30 }}>
-                  <h2 className="site-serif" style={{ fontSize: 34, margin: 0, fontWeight: 500, color: "var(--head)" }}>Day by Day</h2>
-                  <span style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--txt-faint)" }}>{pkg.days} days</span>
-                </div>
-                <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 26 }}>
-                  <span style={{ position: "absolute", left: 29, top: 20, bottom: 20, width: 1, background: "linear-gradient(to bottom, rgba(2,136,209,.05), rgba(2,136,209,.45), rgba(2,136,209,.05))" }} />
-                  {journey.map((d, i) => (
-                    <div key={i} data-reveal="1" style={{ display: "grid", gridTemplateColumns: "60px 1fr", gap: 24, alignItems: "stretch" }}>
-                      <span style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 16 }}>
-                        <span style={{ width: 58, height: 58, borderRadius: "50%", border: "1px solid rgba(2,136,209,.5)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "var(--bg)", lineHeight: 1 }}>
-                          <span style={{ fontSize: 8.5, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--txt-faint)", marginBottom: 3 }}>Day</span>
-                          <span className="site-serif" style={{ fontSize: 20, color: "var(--gold)" }}>{d.day ?? i + 1}</span>
-                        </span>
-                      </span>
-                      <div style={{ border: "1px solid var(--bd-soft)", borderRadius: 16, background: "var(--panel)", padding: "26px 30px", display: "flex", flexDirection: "column", gap: 10, justifyContent: "center" }}>
-                        <span className="site-serif" style={{ fontSize: 22, lineHeight: 1.25, color: "var(--head)" }}>{d.title}</span>
-                        <span style={{ fontSize: 14, lineHeight: 1.85, color: "var(--txt-mid)", whiteSpace: "pre-wrap" }}>{d.description}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+            {journey.length > 0 && <DayTimeline steps={journey} totalDays={pkg.days} />}
           </div>
 
           {/* Sticky booking sidebar */}
@@ -121,19 +107,36 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
           </aside>
         </div>
 
-        {/* Tour route + included */}
-        {stops.length > 0 && (
-          <div style={{ marginTop: 40 }}>
+        {/* Tour route */}
+        {stopNames.length > 0 && (
+          <div style={{ marginTop: 48 }}>
             <div className="site-eyebrow" style={{ marginBottom: 12 }}>Your path across Sri Lanka</div>
-            <h2 className="site-serif" style={{ fontSize: 40, margin: "0 0 20px", fontWeight: 500, color: "var(--head)" }}>Tour Route</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-              {stops.map((s, i) => (
-                <span key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span className="site-badge">{s}</span>
-                  {i < stops.length - 1 && <span style={{ color: "var(--gold)" }}>→</span>}
-                </span>
-              ))}
-            </div>
+            <h2 className="site-serif" style={{ fontSize: 40, margin: "0 0 24px", fontWeight: 500, color: "var(--head)" }}>Tour Route</h2>
+            {mapStops.length > 0 ? (
+              <div className="route-grid">
+                <RouteMapLoader stops={mapStops} />
+                <div style={{ border: "1px solid var(--bd-soft)", borderRadius: 18, background: "var(--panel)", padding: "24px 22px" }}>
+                  <div style={{ fontSize: 11.5, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--gold)", paddingBottom: 14, borderBottom: "1px solid var(--bd-soft)" }}>Route stops</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 12 }}>
+                    {mapStops.map((s, i) => (
+                      <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "12px 4px" }}>
+                        <span style={{ flex: "0 0 28px", height: 28, borderRadius: "50%", background: "rgba(2,136,209,.14)", color: "var(--gold)", display: "grid", placeItems: "center", fontSize: 12.5 }}>{i + 1}</span>
+                        <span style={{ fontSize: 14.5, lineHeight: 1.35, color: "var(--head-2)", paddingTop: 4 }}>{s.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+                {stopNames.map((s, i) => (
+                  <span key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span className="site-badge">{s}</span>
+                    {i < stopNames.length - 1 && <span style={{ color: "var(--gold)" }}>→</span>}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -12,6 +13,19 @@ import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { GalleryUploader } from "@/components/admin/gallery-uploader";
+
+const LocationPicker = dynamic(() => import("@/components/admin/location-picker"), {
+  ssr: false,
+  loading: () => <div className="h-[300px] animate-pulse rounded-lg bg-slate-100 dark:bg-slate-800" />,
+});
+
+// Derive the stylised-map pin position (%) from real coordinates using
+// Sri Lanka's approximate bounding box.
+function toPin(lat: number, lng: number) {
+  const left = Math.max(0, Math.min(100, ((lng - 79.5) / (82.0 - 79.5)) * 100));
+  const top = Math.max(0, Math.min(100, ((9.9 - lat) / (9.9 - 5.8)) * 100));
+  return { top: `${top.toFixed(1)}%`, left: `${left.toFixed(1)}%` };
+}
 
 export interface DestinationInitial {
   id?: number;
@@ -25,6 +39,8 @@ export interface DestinationInitial {
   rating?: string | null;
   pinTop?: string | null;
   pinLeft?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   isFeatured?: boolean;
 }
 
@@ -42,8 +58,19 @@ export function DestinationForm({ initial }: { initial?: DestinationInitial }) {
   const [rating, setRating] = useState(initial?.rating ?? "");
   const [pinTop, setPinTop] = useState(initial?.pinTop ?? "");
   const [pinLeft, setPinLeft] = useState(initial?.pinLeft ?? "");
+  const [lat, setLat] = useState<number | null>(initial?.latitude ?? null);
+  const [lng, setLng] = useState<number | null>(initial?.longitude ?? null);
   const [isFeatured, setIsFeatured] = useState(initial?.isFeatured ?? false);
   const [saving, setSaving] = useState(false);
+
+  function handleLocation(newLat: number, newLng: number, placeName?: string) {
+    setLat(newLat);
+    setLng(newLng);
+    const pin = toPin(newLat, newLng);
+    setPinTop(pin.top);
+    setPinLeft(pin.left);
+    if (placeName && !name) setName(placeName);
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -66,6 +93,8 @@ export function DestinationForm({ initial }: { initial?: DestinationInitial }) {
           rating,
           pinTop,
           pinLeft,
+          latitude: lat,
+          longitude: lng,
           isFeatured,
         }),
       });
@@ -131,16 +160,12 @@ export function DestinationForm({ initial }: { initial?: DestinationInitial }) {
               <Label htmlFor="rating">Rating</Label>
               <Input id="rating" value={rating} onChange={(e) => setRating(e.target.value)} placeholder="e.g. 4.9" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="pinTop">Map pin top (%)</Label>
-                <Input id="pinTop" value={pinTop} onChange={(e) => setPinTop(e.target.value)} placeholder="44%" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pinLeft">Map pin left (%)</Label>
-                <Input id="pinLeft" value={pinLeft} onChange={(e) => setPinLeft(e.target.value)} placeholder="55%" />
-              </div>
-            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="space-y-3 pt-6">
+            <Label>Location on the map</Label>
+            <LocationPicker lat={lat} lng={lng} onChange={handleLocation} />
           </CardContent>
         </Card>
         <Card>

@@ -47,7 +47,11 @@
   --bd-soft: rgba(6, 42, 58, 0.1);
 }
 
-.site-root a { color: inherit; text-decoration: none; }
+.site-root a { text-decoration: none; }
+/* Only class-less links inherit the text colour; styled links (buttons, cards)
+   keep the colour their own class sets — otherwise this rule's higher specificity
+   would override them and hide light text in light mode. */
+.site-root a:not([class]) { color: inherit; }
 .site-root img, .site-root svg { max-width: 100%; }
 .site-serif { font-family: var(--font-playfair), Georgia, serif; }
 
@@ -197,6 +201,48 @@
 .island-story > span { display: flex; justify-content: space-between; border-top: 1px solid #ffffff55; padding-top: 13px; font-size: 12px; }
 .island-story:hover img { transform: scale(1.08); }
 
+/* ---------- day-by-day animated timeline --------------------------------- */
+.tl { position: relative; }
+.tl-item { display: grid; grid-template-columns: 64px 1fr; gap: 22px; padding-bottom: 34px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-rail { position: relative; display: flex; justify-content: center; }
+.tl-rail::before {
+  content: ""; position: absolute; top: 8px; bottom: -34px; left: 50%; width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, rgba(2, 136, 209, 0.55), rgba(2, 136, 209, 0.12));
+}
+.tl-item:last-child .tl-rail::before { display: none; }
+.tl-node {
+  position: relative; z-index: 1; width: 58px; height: 58px; border-radius: 50%;
+  border: 1px solid rgba(2, 136, 209, 0.5); background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1;
+  transform: scale(0.5); opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+}
+.tl-node-label { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--txt-faint); margin-bottom: 3px; }
+.tl-node-num { font-size: 20px; color: var(--gold); }
+.tl-card {
+  border: 1px solid var(--bd-soft); border-radius: 16px; background: var(--panel); overflow: hidden;
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.tl-card:hover { border-color: rgba(2, 136, 209, 0.4); box-shadow: 0 16px 36px rgba(2, 12, 18, 0.28); }
+.tl-item.in .tl-node { transform: scale(1); opacity: 1; }
+.tl-item.in .tl-card { opacity: 1; transform: none; }
+.tl-img { position: relative; background: linear-gradient(135deg, #062c3a, #041e28); display: flex; justify-content: center; }
+.tl-img img { display: block; width: 100%; height: auto; max-height: 460px; object-fit: contain; }
+.tl-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 10px; }
+.tl-body h3 { font-size: 22px; line-height: 1.25; color: var(--head); margin: 0; }
+.tl-body p { font-size: 14px; line-height: 1.85; color: var(--txt-mid); margin: 0; }
+@media (max-width: 600px) {
+  .tl-item { grid-template-columns: 46px 1fr; gap: 14px; }
+  .tl-node { width: 46px; height: 46px; }
+  .tl-node-num { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-node, .tl-card { opacity: 1 !important; transform: none !important; }
+}
+
 /* ---------- reveal-on-scroll + parallax ---------------------------------- */
 [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.75, 0.2, 1); }
 [data-reveal].is-visible { opacity: 1; transform: none; }
@@ -232,6 +278,9 @@
   .grid-3, .grid-4, .grid-5, .experience-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 350px) { .island-story-grid { grid-template-columns: 1fr; } }
+
+.route-grid { display: grid; grid-template-columns: 1.35fr 0.65fr; gap: 26px; align-items: start; }
+@media (max-width: 860px) { .route-grid { grid-template-columns: 1fr; } }
 
 .pkg-main-grid { display: grid; grid-template-columns: 1.55fr 0.8fr; gap: 52px; align-items: start; }
 @media (max-width: 900px) { .pkg-main-grid { grid-template-columns: 1fr; } }

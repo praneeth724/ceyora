@@ -9,7 +9,7 @@ const HERO = "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_tea_
 export default async function BookPage({ searchParams }: { searchParams: Promise<{ package?: string }> }) {
   const { package: pkgSlug } = await searchParams;
   const [packages, selected] = await Promise.all([
-    prisma.package.findMany({ orderBy: { title: "asc" }, select: { id: true, title: true } }),
+    prisma.package.findMany({ orderBy: { title: "asc" }, select: { id: true, title: true, price: true, dealPrice: true } }),
     pkgSlug
       ? prisma.package.findUnique({ where: { slug: pkgSlug }, include: { category: { select: { title: true } } } })
       : Promise.resolve(null),

@@ -21,9 +21,9 @@ import {
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { GalleryUploader } from "@/components/admin/gallery-uploader";
 import { StringListEditor } from "@/components/admin/string-list-editor";
+import { RouteStopsEditor, type RouteStop } from "@/components/admin/packages/route-stops-editor";
 
-interface JourneyStep { day?: number; title: string; description: string }
-interface RouteStep { from: string; to: string; note?: string }
+interface JourneyStep { day?: number; title: string; description: string; image?: string }
 interface FaqItem { q: string; a: string }
 
 export interface PackageInitial {
@@ -41,7 +41,7 @@ export interface PackageInitial {
   overview?: string | null;
   gallery?: string[];
   journey?: JourneyStep[];
-  route?: RouteStep[];
+  route?: RouteStop[];
   included?: string[];
   excluded?: string[];
   faq?: FaqItem[];
@@ -78,7 +78,7 @@ export function PackageForm({
   const [overview, setOverview] = useState(initial?.overview ?? "");
   const [gallery, setGallery] = useState<string[]>(initial?.gallery ?? []);
   const [journey, setJourney] = useState<JourneyStep[]>(initial?.journey ?? []);
-  const [route, setRoute] = useState<RouteStep[]>(initial?.route ?? []);
+  const [route, setRoute] = useState<RouteStop[]>(initial?.route ?? []);
   const [included, setIncluded] = useState<string[]>(initial?.included ?? []);
   const [excluded, setExcluded] = useState<string[]>(initial?.excluded ?? []);
   const [faq, setFaq] = useState<FaqItem[]>(initial?.faq ?? []);
@@ -115,8 +115,8 @@ export function PackageForm({
           heroImage,
           overview,
           gallery,
-          journey: journey.filter((j) => j.title || j.description),
-          route: route.filter((r) => r.from || r.to),
+          journey: journey.filter((j) => j.title || j.description || j.image),
+          route: route.filter((r) => r.name || r.lat != null),
           included: included.filter(Boolean),
           excluded: excluded.filter(Boolean),
           faq: faq.filter((f) => f.q || f.a),
@@ -201,30 +201,31 @@ export function PackageForm({
                     setJourney(next);
                   }}
                 />
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Day image (optional)"
+                    value={step.image ?? ""}
+                    folder="ceyora/packages/days"
+                    onChange={(url) => {
+                      const next = [...journey];
+                      next[i] = { ...step, image: url };
+                      setJourney(next);
+                    }}
+                  />
+                </div>
               </div>
             ))}
-            <Button type="button" variant="outline" size="sm" onClick={() => setJourney([...journey, { day: journey.length + 1, title: "", description: "" }])}>
+            <Button type="button" variant="outline" size="sm" onClick={() => setJourney([...journey, { day: journey.length + 1, title: "", description: "", image: "" }])}>
               <Plus className="mr-1 h-4 w-4" /> Add day
             </Button>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="text-base">Route</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            {route.map((step, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Input placeholder="From" value={step.from} onChange={(e) => { const n=[...route]; n[i]={...step, from:e.target.value}; setRoute(n); }} />
-                <Input placeholder="To" value={step.to} onChange={(e) => { const n=[...route]; n[i]={...step, to:e.target.value}; setRoute(n); }} />
-                <Input placeholder="Note" value={step.note ?? ""} onChange={(e) => { const n=[...route]; n[i]={...step, note:e.target.value}; setRoute(n); }} />
-                <Button type="button" variant="ghost" size="icon" onClick={() => setRoute(route.filter((_, idx) => idx !== i))}>
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-            <Button type="button" variant="outline" size="sm" onClick={() => setRoute([...route, { from: "", to: "", note: "" }])}>
-              <Plus className="mr-1 h-4 w-4" /> Add leg
-            </Button>
+          <CardHeader><CardTitle className="text-base">Route Stops</CardTitle></CardHeader>
+          <CardContent>
+            <p className="mb-3 text-sm text-slate-500">Search a place or add stops manually. These are drawn on the map on the package page.</p>
+            <RouteStopsEditor value={route} onChange={setRoute} />
           </CardContent>
         </Card>
 

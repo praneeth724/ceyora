@@ -30,6 +30,8 @@ export default async function EditDestinationPage({
           rating: d.rating,
           pinTop: d.pinTop,
           pinLeft: d.pinLeft,
+          latitude: d.latitude,
+          longitude: d.longitude,
           isFeatured: d.isFeatured,
         }}
       />

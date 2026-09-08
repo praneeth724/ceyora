@@ -11,12 +11,14 @@ function arr(v: unknown): string[] {
 }
 
 export default async function GalleryPage() {
-  const [destinations, packages] = await Promise.all([
+  const [adminImages, destinations, packages] = await Promise.all([
+    prisma.galleryImage.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }] }),
     prisma.destination.findMany({ select: { name: true, hero: true, gallery: true } }),
     prisma.package.findMany({ select: { title: true, heroImage: true, gallery: true } }),
   ]);
 
   const images: { src: string; caption: string }[] = [];
+  for (const a of adminImages) images.push({ src: a.image, caption: a.title || "Ceyora" });
   for (const d of destinations) {
     if (d.hero) images.push({ src: d.hero, caption: d.name });
     for (const g of arr(d.gallery)) images.push({ src: g, caption: d.name });
