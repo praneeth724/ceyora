@@ -76,7 +76,7 @@
 .bgsec > i.bgl { position: absolute; inset: 0; display: block; z-index: 0; pointer-events: none; }
 .bgsec > i.bgl.img { background-size: cover; background-position: center; background-attachment: fixed; }
 @media (max-width: 900px), (hover: none) { .bgsec > i.bgl.img { background-attachment: scroll; } }
-.bgsec > i.bgl.scrim { background: var(--bg); opacity: 0.86; }
+.bgsec > i.bgl.scrim { background: var(--bg); opacity: 0.78; }
 .bgsec > div { position: relative; z-index: 1; }
 
 /* reusable pinned-background parallax (fixed to viewport, scrolls under content);
@@ -402,11 +402,13 @@
 .story-split .ss-merge {
   position: absolute; inset: 0;
   background:
-    linear-gradient(180deg, var(--bg) 0%, transparent 16%, transparent 64%, var(--bg) 100%),
-    radial-gradient(115% 78% at 50% 44%, transparent 30%, var(--bg) 80%),
-    /* mute the bottom corners so the feature columns stay readable over the photo */
-    radial-gradient(58% 62% at 2% 100%, color-mix(in srgb, var(--bg) 82%, transparent) 0%, transparent 60%),
-    radial-gradient(58% 62% at 98% 100%, color-mix(in srgb, var(--bg) 82%, transparent) 0%, transparent 60%);
+    /* solid readable centre panel — the photos fade to soft strips at the far
+       left/right edges only, like the reference (white in light, dark in dark). */
+    linear-gradient(90deg, transparent 0%, var(--bg) 24%, var(--bg) 76%, transparent 100%),
+    /* blend the top & bottom into the neighbouring sections */
+    linear-gradient(180deg, var(--bg) 0%, transparent 28%, transparent 74%, var(--bg) 100%),
+    /* gentle overall wash so the edge photos sit softly behind, never competing */
+    linear-gradient(color-mix(in srgb, var(--bg) 50%, transparent), color-mix(in srgb, var(--bg) 50%, transparent));
 }
 /* a soft central glow — the "sun / light" accent between the two worlds */
 .story-split .ss-glow {

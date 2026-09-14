@@ -257,7 +257,7 @@ export default async function HomePage() {
       )}
 
       {/* Plan your dream getaway (offer, parallax) */}
-      <section className="site-container" style={{ padding: "0 0 96px" }}>
+      <section className="site-container" style={{ padding: "72px 0 96px" }}>
         <div style={{ position: "relative", borderRadius: 18, overflow: "hidden", minHeight: 340, display: "flex", alignItems: "center", border: "1px solid rgba(2,136,209,.2)" }}>
           <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.nilaveli}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(95deg, rgba(4,30,40,.95) 0%, rgba(4,30,40,.78) 45%, rgba(4,30,40,.15) 100%)" }} />

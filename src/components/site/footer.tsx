@@ -20,8 +20,8 @@ const SocialIcon = ({ href, label, Icon }: { href: string; label: string; Icon: 
 export function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer style={{ position: "relative", borderTop: "1px solid var(--bd-soft)", padding: "68px 0 0", overflow: "hidden", background: "var(--bg-alt)" }}>
-      <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.hortonPlains}')`, backgroundSize: "cover", backgroundPosition: "center 40%", opacity: 0.35 }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,30,40,.85) 0%, rgba(4,30,40,.7) 45%, var(--bg-alt) 100%)" }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.hortonPlains}')`, backgroundSize: "cover", backgroundPosition: "center 40%", opacity: 0.5 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, color-mix(in srgb, var(--bg-alt) 62%, transparent) 0%, color-mix(in srgb, var(--bg-alt) 55%, transparent) 45%, var(--bg-alt) 100%)" }} />
       <div className="site-container" style={{ position: "relative" }}>
         <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.3fr", gap: 48, paddingBottom: 52 }}>
           {/* Brand */}
