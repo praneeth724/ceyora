@@ -50,7 +50,11 @@ export function SiteEffects() {
         const vh = window.innerHeight;
         parallaxEls.forEach((el) => {
           const speed = parseFloat(el.dataset.parallax || "0.15");
-          const rect = el.getBoundingClientRect();
+          // Measure a STABLE reference (the untransformed parent/section), not the
+          // element itself — its own rect already includes the transform we set,
+          // which would feed back and make the parallax drift/compound.
+          const ref = (el.offsetParent as HTMLElement | null) || el.parentElement || el;
+          const rect = ref.getBoundingClientRect();
           const offset = rect.top + rect.height / 2 - vh / 2;
           el.style.transform = `translate3d(0, ${(-offset * speed).toFixed(1)}px, 0)`;
         });

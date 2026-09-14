@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { PackagesGrid } from "@/components/site/packages-grid";
+import { IMG } from "@/lib/site-images";
 
 export const metadata = { title: "Tour Packages" };
 
-const HERO = "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_Railways.jpg?width=1800";
+const HERO = IMG.train;
 
 export default async function PackagesListPage() {
   const packages = await prisma.package.findMany({

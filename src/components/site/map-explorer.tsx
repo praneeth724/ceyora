@@ -67,10 +67,11 @@ export function MapExplorer({ destinations }: { destinations: MapDest[] }) {
               key={d.slug}
               onClick={() => setSelected(i)}
               style={{
-                padding: "4px 10px", borderRadius: 6, fontSize: 10.5, letterSpacing: ".04em", cursor: "pointer",
-                background: i === selected ? "#0288D1" : "rgba(4,30,40,.5)",
-                color: i === selected ? "#fff" : "var(--txt-mid)",
-                border: "1px solid " + (i === selected ? "#0288D1" : "var(--bd-soft)"),
+                padding: "5px 12px", borderRadius: 6, fontSize: 11, letterSpacing: ".04em", cursor: "pointer", fontWeight: 500,
+                background: i === selected ? "#0288D1" : "var(--panel-2)",
+                color: i === selected ? "#fff" : "var(--head-2)",
+                border: "1px solid " + (i === selected ? "#0288D1" : "var(--bd)"),
+                backdropFilter: "blur(4px)",
               }}
             >
               {d.name}

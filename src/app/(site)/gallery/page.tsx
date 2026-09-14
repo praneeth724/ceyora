@@ -1,10 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { PageBanner } from "@/components/site/page-banner";
+import { IMG } from "@/lib/site-images";
 
 export const metadata = { title: "Gallery" };
-
-const WIKI = (name: string) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${name}?width=1200`;
 
 function arr(v: unknown): string[] {
   return Array.isArray(v) ? (v as string[]) : [];
@@ -29,14 +27,14 @@ export default async function GalleryPage() {
   }
 
   const fallback = [
-    { src: WIKI("Nine_Arches_Bridge.jpg"), caption: "Nine Arch Bridge" },
-    { src: WIKI("Mirissa_Beach.jpg"), caption: "Mirissa Beach" },
-    { src: WIKI("Sigiriya_Rock.jpg"), caption: "Sigiriya" },
-    { src: WIKI("Sri_Lanka_tea_plantation.jpg"), caption: "Tea Country" },
-    { src: WIKI("Temple_of_the_Tooth.jpg"), caption: "Kandy" },
-    { src: WIKI("Galle_Fort.jpg"), caption: "Galle Fort" },
-    { src: WIKI("Yala_National_Park.jpg"), caption: "Yala" },
-    { src: WIKI("Nilaveli_Beach.jpg"), caption: "Nilaveli" },
+    { src: IMG.train, caption: "Nine Arch Bridge" },
+    { src: IMG.beach, caption: "Mirissa Beach" },
+    { src: IMG.sigiriya, caption: "Sigiriya" },
+    { src: IMG.teaHills, caption: "Tea Country" },
+    { src: IMG.kandyTemple, caption: "Kandy" },
+    { src: IMG.galleFort, caption: "Galle Fort" },
+    { src: IMG.leopard, caption: "Yala" },
+    { src: IMG.nilaveli, caption: "Nilaveli" },
   ];
   const items = images.length >= 4 ? images : [...images, ...fallback];
 

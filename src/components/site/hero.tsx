@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { IMG } from "@/lib/site-images";
 
 interface DestPreview {
   slug: string;
@@ -10,12 +11,7 @@ interface DestPreview {
   hero: string | null;
 }
 
-const SLIDES = [
-  "/site/hero.jpg",
-  "https://commons.wikimedia.org/wiki/Special:FilePath/Sigiriya_Rock.jpg?width=1800",
-  "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_tea_plantation.jpg?width=1800",
-  "https://commons.wikimedia.org/wiki/Special:FilePath/Mirissa_Beach.jpg?width=1800",
-];
+const SLIDES = [IMG.sigiriya, IMG.train, IMG.teaHills, IMG.beach];
 
 const STATS = [
   { value: "5K+", a: "Trips Planned", b: "Seamlessly" },

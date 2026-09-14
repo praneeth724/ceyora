@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { PackageCard, SectionHeader } from "@/components/site/cards";
+import { IMG } from "@/lib/site-images";
 
 function arr<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v as T[]) : [];
@@ -36,9 +37,7 @@ export default async function DestinationDetailPage({
   if (!destination) notFound();
 
   const gallery = arr<string>(destination.gallery);
-  const heroBg =
-    destination.hero ||
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Nine_Arch_Bridge_Ella.jpg?width=1800";
+  const heroBg = destination.hero || IMG.sigiriya;
 
   return (
     <>

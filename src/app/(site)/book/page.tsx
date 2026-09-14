@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/site";
 import { BookForm } from "@/components/site/book-form";
+import { IMG } from "@/lib/site-images";
 
 export const metadata = { title: "Book a Trip" };
 
-const HERO = "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_tea_plantation.jpg?width=1920";
+const HERO = IMG.teaHills;
 
 export default async function BookPage({ searchParams }: { searchParams: Promise<{ package?: string }> }) {
   const { package: pkgSlug } = await searchParams;
@@ -19,7 +20,7 @@ export default async function BookPage({ searchParams }: { searchParams: Promise
     <div>
       {/* Hero */}
       <section style={{ position: "relative", height: 460, display: "flex", alignItems: "center", overflow: "hidden" }}>
-        <div data-parallax="0.12" style={{ position: "absolute", inset: "-12% 0", backgroundImage: `url('${HERO}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
+        <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${HERO}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(95deg, rgba(4,30,40,.95), rgba(4,30,40,.5) 65%, rgba(4,30,40,.7))" }} />
         <div className="site-container" style={{ position: "relative", width: "100%" }}>
           <h1 className="site-serif" style={{ fontSize: "clamp(38px,6vw,62px)", lineHeight: 1.02, margin: 0, fontWeight: 500, color: "#F2FAFF" }}>Book Your</h1>

@@ -8,6 +8,7 @@ import { FaqAccordion, type FaqItem } from "@/components/site/faq-accordion";
 import { HomePackageCard } from "@/components/site/home-cards";
 import { RouteMapLoader } from "@/components/site/route-map-loader";
 import { DayTimeline } from "@/components/site/day-timeline";
+import { IMG } from "@/lib/site-images";
 
 interface JourneyStep { day?: number; title: string; description: string; image?: string }
 interface RouteStep { name?: string; from?: string; to?: string; lat?: number | null; lng?: number | null; note?: string }
@@ -44,7 +45,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
   const included = arr<string>(pkg.included);
   const excluded = arr<string>(pkg.excluded);
   const faq = arr<FaqItem>(pkg.faq);
-  const heroBg = pkg.heroImage || "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_tea_plantation.jpg?width=1800";
+  const heroBg = pkg.heroImage || IMG.teaHills;
   // Route stops with real coordinates (for the Leaflet map); support old {from,to} shape as a text fallback.
   const mapStops = route
     .filter((r) => typeof r.lat === "number" && typeof r.lng === "number" && r.name)

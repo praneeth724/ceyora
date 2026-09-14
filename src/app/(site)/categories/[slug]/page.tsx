@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { HomePackageCard } from "@/components/site/home-cards";
+import { IMG } from "@/lib/site-images";
 
 const PERKS = [
   { icon: "◎", title: "Authentic", sub: "Local experiences" },
@@ -24,12 +25,12 @@ export default async function CategoryDetailPage({ params }: { params: Promise<{
   });
   if (!category) notFound();
 
-  const hero = category.coverImage || category.cardImage || "https://commons.wikimedia.org/wiki/Special:FilePath/Sigiriya_Rock.jpg?width=1800";
+  const hero = category.coverImage || category.cardImage || IMG.sigiriya;
 
   return (
     <div>
       <section style={{ position: "relative", minHeight: 520, display: "flex", alignItems: "flex-end", overflow: "hidden" }}>
-        <div data-parallax="0.14" style={{ position: "absolute", inset: "-12% 0", backgroundImage: `url('${hero}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
+        <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${hero}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(4,30,40,.97) 4%, rgba(4,30,40,.5) 55%, rgba(4,30,40,.72))" }} />
         <div className="site-container" style={{ position: "relative", paddingBottom: 54, width: "100%" }}>
           <Link href="/categories" style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "rgba(214,236,247,.65)" }}>← All categories</Link>

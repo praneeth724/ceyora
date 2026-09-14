@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { HomeCategoryCard } from "@/components/site/home-cards";
+import { IMG } from "@/lib/site-images";
 
 export const metadata = { title: "Tour Categories" };
 
-const HERO = "https://commons.wikimedia.org/wiki/Special:FilePath/Nine_Arches_Bridge.jpg?width=1920";
+const HERO = IMG.train;
 
 export default async function CategoriesListPage() {
   const categories = await prisma.category.findMany({
@@ -14,7 +15,7 @@ export default async function CategoriesListPage() {
   return (
     <div>
       <section style={{ position: "relative", height: 400, display: "flex", alignItems: "center", overflow: "hidden" }}>
-        <div data-parallax="0.13" style={{ position: "absolute", inset: "-12% 0", backgroundImage: `url('${HERO}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
+        <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${HERO}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(95deg, rgba(4,30,40,.95), rgba(4,30,40,.5) 70%, rgba(4,30,40,.72))" }} />
         <div className="site-container" style={{ position: "relative", width: "100%" }}>
           <div className="site-eyebrow" style={{ marginBottom: 14 }}>Browse by style of travel</div>

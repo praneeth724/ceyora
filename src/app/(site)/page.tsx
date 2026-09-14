@@ -4,6 +4,7 @@ import { Hero } from "@/components/site/hero";
 import { MapExplorer } from "@/components/site/map-explorer";
 import { GalleryReel, type ReelItem } from "@/components/site/gallery-reel";
 import { ParallaxBand } from "@/components/site/parallax-band";
+import { StorySplit } from "@/components/site/story-split";
 // import { ScrollCinema } from "@/components/site/scroll-cinema"; // temporarily disabled
 import {
   HomeCategoryCard,
@@ -11,14 +12,12 @@ import {
   HomePackageCard,
   JournalCard,
 } from "@/components/site/home-cards";
-
-const WIKI = (name: string, w = 1600) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${name}?width=${w}`;
+import { IMG } from "@/lib/site-images";
 
 const EXPERIENCES = [
-  { number: "01", title: "Beaches", copy: "Golden sand, warm water and slow coastal days along the south and east.", img: WIKI("Mirissa_Beach.jpg"), href: "/categories" },
-  { number: "02", title: "Highlands", copy: "Misty tea country, cool air and train rides through the clouds.", img: WIKI("Sri_Lanka_tea_plantation.jpg"), href: "/categories" },
-  { number: "03", title: "Heritage", copy: "Ancient cities, sacred temples and stories centuries in the making.", img: WIKI("Sigiriya_Rock.jpg"), href: "/categories" },
+  { number: "01", title: "Beaches", copy: "Golden sand, warm water and slow coastal days along the south and east.", img: IMG.beach, href: "/categories" },
+  { number: "02", title: "Highlands", copy: "Misty tea country, cool air and train rides through the clouds.", img: IMG.teaHills, href: "/categories" },
+  { number: "03", title: "Heritage", copy: "Ancient cities, sacred temples and stories centuries in the making.", img: IMG.sigiriya, href: "/categories" },
 ];
 
 const WHY_US = [
@@ -29,9 +28,9 @@ const WHY_US = [
 ];
 
 const TESTIMONIALS = [
-  { text: "The most seamless trip we've ever taken. Every detail was handled and every place felt special.", name: "Emily R.", from: "United Kingdom", trip: "Cultural Triangle", img: WIKI("Sigiriya_Rock.jpg", 200) },
-  { text: "From the beaches to the tea hills, Sri Lanka stole our hearts. Our guide was wonderful.", name: "David & Anna", from: "Australia", trip: "Southern Coast", img: WIKI("Mirissa_Beach.jpg", 200) },
-  { text: "Effortless, authentic and beautiful. We'll be back for the north next time.", name: "Sofia M.", from: "Spain", trip: "Wildlife Safari", img: WIKI("Sri_Lankan_leopard.jpg", 200) },
+  { text: "The most seamless trip we've ever taken. Every detail was handled and every place felt special.", name: "Emily R.", from: "United Kingdom", trip: "Cultural Triangle", img: IMG.sigiriya },
+  { text: "From the beaches to the tea hills, Sri Lanka stole our hearts. Our guide was wonderful.", name: "David & Anna", from: "Australia", trip: "Southern Coast", img: IMG.beach },
+  { text: "Effortless, authentic and beautiful. We'll be back for the north next time.", name: "Sofia M.", from: "Spain", trip: "Wildlife Safari", img: IMG.leopard },
 ];
 
 export default async function HomePage() {
@@ -74,12 +73,12 @@ export default async function HomePage() {
     if (p.heroImage) reelItems.push({ img: p.heroImage, caption: p.title, href: `/packages/${p.slug}` });
   }
   const reelFallback: ReelItem[] = [
-    { img: WIKI("Nine_Arches_Bridge.jpg"), caption: "Nine Arch Bridge" },
-    { img: WIKI("Mirissa_Beach.jpg"), caption: "Mirissa Beach" },
-    { img: WIKI("Sigiriya_Rock.jpg"), caption: "Sigiriya" },
-    { img: WIKI("Sri_Lanka_tea_plantation.jpg"), caption: "Tea Country" },
-    { img: WIKI("Temple_of_the_Tooth.jpg"), caption: "Kandy" },
-    { img: WIKI("Galle_Fort.jpg"), caption: "Galle Fort" },
+    { img: IMG.train, caption: "Nine Arch Bridge" },
+    { img: IMG.beach, caption: "Mirissa Beach" },
+    { img: IMG.sigiriya, caption: "Sigiriya" },
+    { img: IMG.teaHills, caption: "Tea Country" },
+    { img: IMG.kandyTemple, caption: "Kandy" },
+    { img: IMG.galleFort, caption: "Galle Fort" },
   ];
   const gallery = reelItems.length >= 4 ? reelItems : [...reelItems, ...reelFallback].slice(0, 6);
 
@@ -97,10 +96,13 @@ export default async function HomePage() {
       {/* Cinematic scroll journey — temporarily disabled */}
       {/* <ScrollCinema /> */}
 
+      {/* Our story — two masked background images merging in the centre */}
+      <StorySplit />
+
       {/* Tour Categories */}
       {categories.length > 0 && (
         <section className="bgsec" style={{ padding: "72px 0" }}>
-          <i className="bgl img" style={{ backgroundImage: `url('${WIKI("Unawatuna_beach.jpg")}')` }} />
+          <i className="bgl img" style={{ backgroundImage: `url('${IMG.nilaveli}')` }} />
           <i className="bgl scrim" />
           <div className="site-container">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, marginBottom: 30, flexWrap: "wrap" }}>
@@ -144,7 +146,7 @@ export default async function HomePage() {
 
       {/* Slow feature parallax */}
       <section className="slow-feature">
-        <div className="scenic-image" data-parallax="0.16" style={{ backgroundImage: `url('${WIKI("Sri_Lanka_tea_plantation.jpg", 1920)}')` }} />
+        <div className="scenic-image" style={{ backgroundImage: `url('${IMG.teaHills}')` }} />
         <div className="scenic-shade" />
         <div className="scenic-copy">
           <span className="site-eyebrow" style={{ color: "var(--gold-l)" }}>Take the scenic route</span>
@@ -157,7 +159,7 @@ export default async function HomePage() {
       {/* Explore Sri Lanka map */}
       {mapDest.length > 0 && (
         <section style={{ position: "relative", padding: "110px 0", overflow: "hidden" }}>
-          <div data-parallax="0.14" style={{ position: "absolute", inset: "-14% 0", backgroundImage: `url('${WIKI("Worlds_End_Sri_Lanka.jpg", 1920)}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
+          <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.hortonPlains}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,30,40,.93), rgba(4,30,40,.8) 45%, rgba(4,30,40,.95))" }} />
           <div className="site-container" style={{ position: "relative" }}>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -172,7 +174,7 @@ export default async function HomePage() {
 
       {/* Featured Destinations */}
       {destinations.length > 0 && (
-        <section className="site-container" style={{ padding: "96px 0 0" }}>
+        <section className="site-container" style={{ padding: "96px 0" }}>
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, marginBottom: 34, flexWrap: "wrap" }}>
             <div>
               <div className="site-eyebrow" style={{ marginBottom: 12 }}>Explore the best</div>
@@ -190,7 +192,7 @@ export default async function HomePage() {
 
       {/* Immersive parallax band (fixed background scrolls under content) */}
       <ParallaxBand
-        image={WIKI("Nine_Arches_Bridge.jpg", 1920)}
+        image={IMG.train}
         eyebrow="The island awaits"
         title={<>Every road here leads<br />somewhere unforgettable.</>}
         text="Misty mountains, ancient cities and a coastline that never ends — all within a few hours' drive. Let us map the journey."
@@ -203,7 +205,7 @@ export default async function HomePage() {
       <section className="site-container" style={{ padding: "96px 0" }}>
         <div className="grid-2" style={{ gap: 64, alignItems: "center" }}>
           <div style={{ position: "relative", height: 480, borderRadius: 16, overflow: "hidden", border: "1px solid var(--bd-soft)" }}>
-            <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${WIKI("Nine_Arches_Bridge.jpg", 1400)}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
+            <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.waterfall}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(4,30,40,.8), rgba(4,30,40,.05))" }} />
             <div style={{ position: "absolute", left: 26, bottom: 26, display: "flex", alignItems: "center", gap: 16 }}>
               <span style={{ width: 52, height: 52, borderRadius: "50%", background: "rgba(2,136,209,.92)", color: "#fff", display: "grid", placeItems: "center", fontSize: 15 }}>▶</span>
@@ -235,7 +237,7 @@ export default async function HomePage() {
       {/* Featured Packages */}
       {packages.length > 0 && (
         <section className="bgsec" style={{ padding: "96px 0" }}>
-          <i className="bgl img" style={{ backgroundImage: `url('${WIKI("Nilaveli_Beach.jpg")}')` }} />
+          <i className="bgl img" style={{ backgroundImage: `url('${IMG.coastVilla}')` }} />
           <i className="bgl scrim" />
           <div className="site-container">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, marginBottom: 34, flexWrap: "wrap" }}>
@@ -257,7 +259,7 @@ export default async function HomePage() {
       {/* Plan your dream getaway (offer, parallax) */}
       <section className="site-container" style={{ padding: "0 0 96px" }}>
         <div style={{ position: "relative", borderRadius: 18, overflow: "hidden", minHeight: 340, display: "flex", alignItems: "center", border: "1px solid rgba(2,136,209,.2)" }}>
-          <div data-parallax="0.12" style={{ position: "absolute", inset: 0, backgroundImage: `url('${WIKI("Pigeon_Island.jpg", 1800)}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
+          <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.nilaveli}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(95deg, rgba(4,30,40,.95) 0%, rgba(4,30,40,.78) 45%, rgba(4,30,40,.15) 100%)" }} />
           <div style={{ position: "relative", padding: "54px 48px", maxWidth: 620 }}>
             <div className="site-eyebrow" style={{ marginBottom: 14 }}>Limited time offer</div>
@@ -285,7 +287,7 @@ export default async function HomePage() {
       {/* Journal */}
       {posts.length > 0 && (
         <section className="bgsec" style={{ padding: "96px 0" }}>
-          <i className="bgl img" style={{ backgroundImage: `url('${WIKI("Sri_Lanka_Railways.jpg")}')` }} />
+          <i className="bgl img" style={{ backgroundImage: `url('${IMG.kandyTemple}')` }} />
           <i className="bgl scrim" />
           <div className="site-container">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, marginBottom: 34, flexWrap: "wrap" }}>

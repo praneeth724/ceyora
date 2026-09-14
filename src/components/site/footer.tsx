@@ -1,23 +1,26 @@
 import Link from "next/link";
+import type { IconType } from "react-icons";
+import { FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import type { SiteSettings } from "@/lib/site";
+import { IMG } from "@/lib/site-images";
 
-const ICONS: Record<string, string> = {
-  facebook: "M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z",
-  instagram: "M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z",
-  youtube: "M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z",
-  whatsapp: "M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-71.7 18.8L70.7 358l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.3 184.6z",
-};
-
-const SocialIcon = ({ href, name, viewBox }: { href: string; name: string; viewBox: string }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={name} style={{ width: 40, height: 40, border: "1px solid var(--bd)", borderRadius: 4, display: "grid", placeItems: "center", color: "var(--txt)" }}>
-    <svg viewBox={viewBox} width="17" height="17" fill="currentColor" aria-hidden="true"><path d={ICONS[name]} /></svg>
+const SocialIcon = ({ href, label, Icon }: { href: string; label: string; Icon: IconType }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={label}
+    className="footer-social"
+    style={{ width: 40, height: 40, border: "1px solid var(--bd)", borderRadius: 8, display: "grid", placeItems: "center", color: "var(--txt)" }}
+  >
+    <Icon size={17} aria-hidden="true" />
   </a>
 );
 
 export function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer style={{ position: "relative", borderTop: "1px solid var(--bd-soft)", padding: "68px 0 0", overflow: "hidden", background: "var(--bg-alt)" }}>
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "url('https://commons.wikimedia.org/wiki/Special:FilePath/Horton_Plains.jpg?width=1920')", backgroundSize: "cover", backgroundPosition: "center 40%", opacity: 0.35 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.hortonPlains}')`, backgroundSize: "cover", backgroundPosition: "center 40%", opacity: 0.35 }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,30,40,.85) 0%, rgba(4,30,40,.7) 45%, var(--bg-alt) 100%)" }} />
       <div className="site-container" style={{ position: "relative" }}>
         <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.3fr", gap: 48, paddingBottom: 52 }}>
@@ -35,10 +38,10 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               Journeys that connect you with the heart and soul of Sri Lanka. Locally owned, responsibly run.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <SocialIcon href={settings.facebook || "https://facebook.com"} name="facebook" viewBox="0 0 512 512" />
-              <SocialIcon href={settings.instagram || "https://instagram.com"} name="instagram" viewBox="0 0 448 512" />
-              <SocialIcon href={settings.youtube || "https://youtube.com"} name="youtube" viewBox="0 0 576 512" />
-              <SocialIcon href={settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}` : "https://wa.me/94771234567"} name="whatsapp" viewBox="0 0 448 512" />
+              <SocialIcon href={settings.facebook || "https://facebook.com"} label="Facebook" Icon={FaFacebookF} />
+              <SocialIcon href={settings.instagram || "https://instagram.com"} label="Instagram" Icon={FaInstagram} />
+              <SocialIcon href={settings.youtube || "https://youtube.com"} label="YouTube" Icon={FaYoutube} />
+              <SocialIcon href={settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}` : "https://wa.me/94771234567"} label="WhatsApp" Icon={FaWhatsapp} />
             </div>
           </div>
 

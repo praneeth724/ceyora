@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { IMG } from "@/lib/site-images";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -22,7 +23,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   const paras = post.content.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
   const date = new Date(post.publishedAt).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
-  const heroBg = post.coverImage || "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_tea_plantation.jpg?width=1800";
+  const heroBg = post.coverImage || IMG.teaHills;
   const initial = (post.author || "C").charAt(0).toUpperCase();
 
   return (

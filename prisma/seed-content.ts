@@ -9,19 +9,22 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const W = (n: string) => `https://commons.wikimedia.org/wiki/Special:FilePath/${n}?width=1400`;
+// Local, optimized image library (mirrors src/lib/site-images.ts). Several
+// subjects share the closest available library image; upload a specific photo
+// per destination/package/post in the admin panel to refine any of them.
+const L = (f: string) => `/site/${f}.webp`;
 const IMG: Record<string, string> = {
-  sigiriya: W("Sigiriya_Rock.jpg"), kandy: W("Sri_Dalada_Maligawa.jpg"), kandyLake: W("Kandy_Lake.jpg"),
-  tea: W("Sri_Lanka_tea_plantation.jpg"), nuwara: W("Nuwara_Eliya.jpg"), gregory: W("Gregory_Lake.jpg"),
-  ella: W("Nine_Arches_Bridge.jpg"), littleAdams: W("Little_Adams_Peak.jpg"), mirissa: W("Mirissa_Beach.jpg"),
-  galle: W("Galle_Fort_Lighthouse.jpg"), elephant: W("Sri_Lankan_elephant.jpg"), leopard: W("Sri_Lankan_leopard.jpg"),
-  anuradhapura: W("Ruwanwelisaya_stupa.jpg"), arugam: W("Arugam_Bay.jpg"), arugamBeach: W("Arugam_bay_beach.jpg"),
-  train: W("Sri_Lanka_Railways.jpg"), trinco: W("Trincomalee.jpg"), nilaveli: W("Nilaveli_Beach.jpg"),
-  pigeon: W("Pigeon_Island.jpg"), jaffna: W("Nallur_Kandaswamy_temple.jpg"), sinharaja: W("Sinharaja.jpg"),
-  adams: W("Adams_Peak.jpg"), dambulla: W("Dambulla_cave_temple.jpg"), polonnaruwa: W("Polonnaruwa.jpg"),
-  unawatuna: W("Unawatuna_beach.jpg"), perahera: W("Esala_Perahera.jpg"), horton: W("Horton_Plains.jpg"),
-  worldsEnd: W("Worlds_End_Sri_Lanka.jpg"), stilt: W("Stilt_fishing.jpg"), diyaluma: W("Diyaluma_Falls.jpg"),
-  ravana: W("Ravana_Falls.jpg"), hikkaduwa: W("Hikkaduwa.jpg"), colombo: W("Colombo_skyline.jpg"),
+  sigiriya: L("story-left1"), kandy: L("kandy-temple"), kandyLake: L("kandy-temple"),
+  tea: L("story-right"), nuwara: L("story-right"), gregory: L("waterfall"),
+  ella: L("nine-arch-train"), littleAdams: L("horton-plains"), mirissa: L("story-left"),
+  galle: L("galle-fort"), elephant: L("perahera"), leopard: L("leopard-safari"),
+  anuradhapura: L("story-left1"), arugam: L("story-left"), arugamBeach: L("story-left"),
+  train: L("nine-arch-train"), trinco: L("nilaveli-beach"), nilaveli: L("nilaveli-beach"),
+  pigeon: L("nilaveli-beach"), jaffna: L("kandy-temple"), sinharaja: L("waterfall"),
+  adams: L("horton-plains"), dambulla: L("story-left1"), polonnaruwa: L("story-left1"),
+  unawatuna: L("story-left"), perahera: L("perahera"), horton: L("horton-plains"),
+  worldsEnd: L("horton-plains"), stilt: L("stilt-fishing"), diyaluma: L("waterfall"),
+  ravana: L("waterfall"), hikkaduwa: L("story-left"), colombo: L("story-right1"),
 };
 
 // Real-world coordinates for Sri Lankan places used in destinations and routes.

@@ -3,7 +3,7 @@ import { LeaveReviewForm } from "@/components/site/leave-review-form";
 
 export const metadata = { title: "Leave a Review" };
 
-const IMG = "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Lanka_tea_plantation.jpg?width=1400";
+const IMG = "/site/waterfall.webp";
 
 export default async function LeaveReviewPage() {
   const s = await getSiteSettings();

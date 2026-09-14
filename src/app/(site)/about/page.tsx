@@ -1,17 +1,16 @@
 import Link from "next/link";
 import { getSiteSettings } from "@/lib/site";
+import { IMG } from "@/lib/site-images";
 
 export const metadata = { title: "About Us" };
 
-const W = (n: string, w = 1400) => `https://commons.wikimedia.org/wiki/Special:FilePath/${n}?width=${w}`;
-
 const ABOUT_STRIP = [
-  { img: W("Worlds_End_Sri_Lanka.jpg", 900), caption: "Guiding at World's End" },
-  { img: W("Kandy_Lake.jpg", 900), caption: "Kandy, our second office" },
-  { img: W("Ravana_Falls.jpg", 900), caption: "Waterfall stops, unplanned" },
-  { img: W("Nilaveli_Beach.jpg", 900), caption: "East coast, low season" },
-  { img: W("Dambulla_cave_temple.jpg", 900), caption: "Dambulla with our guides" },
-  { img: W("Adams_Peak.jpg", 900), caption: "Adam's Peak pilgrimage" },
+  { img: IMG.hortonPlains, caption: "Guiding at World's End" },
+  { img: IMG.kandyTemple, caption: "Kandy, our second office" },
+  { img: IMG.waterfall, caption: "Waterfall stops, unplanned" },
+  { img: IMG.nilaveli, caption: "East coast, low season" },
+  { img: IMG.sigiriya, caption: "Cultural triangle with our guides" },
+  { img: IMG.teaHills, caption: "Highland pilgrimage" },
 ];
 
 const ESSENCE = [
@@ -28,7 +27,7 @@ export default async function AboutPage() {
     <div>
       {/* Hero */}
       <section style={{ position: "relative", height: 420, display: "flex", alignItems: "center", overflow: "hidden" }}>
-        <div data-parallax="0.12" style={{ position: "absolute", inset: 0, backgroundImage: `url('${W("Horton_Plains.jpg", 1800)}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
+        <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.hortonPlains}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,30,40,.96), rgba(4,30,40,.5))" }} />
         <div className="site-container" style={{ position: "relative", width: "100%" }}>
           <div className="site-eyebrow" style={{ marginBottom: 14 }}>About us</div>
@@ -59,15 +58,15 @@ export default async function AboutPage() {
             </div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "210px 210px", gap: 14 }}>
-            <div style={{ borderRadius: 14, backgroundImage: `url('${W("Sri_Lanka_tea_plantation.jpg", 900)}')`, backgroundSize: "cover", backgroundPosition: "center", gridRow: "span 2" }} />
-            <div style={{ borderRadius: 14, backgroundImage: `url('${W("Esala_Perahera.jpg", 900)}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
-            <div style={{ borderRadius: 14, backgroundImage: `url('${W("Stilt_fishing.jpg", 900)}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
+            <div style={{ borderRadius: 14, backgroundImage: `url('${IMG.teaHills}')`, backgroundSize: "cover", backgroundPosition: "center", gridRow: "span 2" }} />
+            <div style={{ borderRadius: 14, backgroundImage: `url('${IMG.perahera}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
+            <div style={{ borderRadius: 14, backgroundImage: `url('${IMG.stiltFishing}')`, backgroundSize: "cover", backgroundPosition: "center" }} />
           </div>
         </div>
       </section>
 
       {/* Quote band — fixed-background parallax (image pinned, content scrolls over) */}
-      <section className="parallax-band" style={{ minHeight: 520, display: "flex", alignItems: "center", marginBottom: 96, backgroundImage: `url('${W("Diyaluma_Falls.jpg", 1920)}')` }}>
+      <section className="parallax-band" style={{ minHeight: 520, display: "flex", alignItems: "center", marginBottom: 96, backgroundImage: `url('${IMG.waterfall}')` }}>
         <span className="parallax-scrim" style={{ background: "linear-gradient(90deg, rgba(4,30,40,.92), rgba(4,30,40,.45) 70%, rgba(4,30,40,.7))" }} />
         <div className="site-container parallax-inner" style={{ width: "100%" }}>
           <div style={{ maxWidth: 620 }}>
@@ -120,7 +119,7 @@ export default async function AboutPage() {
       {/* CTA */}
       <section className="site-container" style={{ padding: "0 0 110px" }}>
         <div style={{ position: "relative", borderRadius: 18, overflow: "hidden", padding: "80px 48px", textAlign: "center", border: "1px solid rgba(2,136,209,.2)" }}>
-          <div data-parallax="0.12" style={{ position: "absolute", inset: 0, backgroundImage: `url('${W("Unawatuna_beach.jpg", 1800)}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
+          <div className="px-fixed" style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMG.beach}')`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(4,30,40,.82)" }} />
           <div style={{ position: "relative" }}>
             <h2 className="site-serif" style={{ fontSize: "clamp(30px,4vw,46px)", margin: "0 0 4px", fontWeight: 500, color: "#F2FAFF" }}>Ready to explore Sri Lanka?</h2>
