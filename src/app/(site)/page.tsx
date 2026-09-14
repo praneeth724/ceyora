@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { Hero } from "@/components/site/hero";
 import { MapExplorer } from "@/components/site/map-explorer";
 import { GalleryReel, type ReelItem } from "@/components/site/gallery-reel";
+import { ParallaxBand } from "@/components/site/parallax-band";
+// import { ScrollCinema } from "@/components/site/scroll-cinema"; // temporarily disabled
 import {
   HomeCategoryCard,
   FeaturedDestinationCard,
@@ -91,6 +93,9 @@ export default async function HomePage() {
   return (
     <>
       <Hero tagline={null} destinations={heroDest} />
+
+      {/* Cinematic scroll journey — temporarily disabled */}
+      {/* <ScrollCinema /> */}
 
       {/* Tour Categories */}
       {categories.length > 0 && (
@@ -182,6 +187,17 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Immersive parallax band (fixed background scrolls under content) */}
+      <ParallaxBand
+        image={WIKI("Nine_Arches_Bridge.jpg", 1920)}
+        eyebrow="The island awaits"
+        title={<>Every road here leads<br />somewhere unforgettable.</>}
+        text="Misty mountains, ancient cities and a coastline that never ends — all within a few hours' drive. Let us map the journey."
+        ctaHref="/packages"
+        ctaLabel="Explore our journeys →"
+        minHeight={520}
+      />
 
       {/* More than just a trip */}
       <section className="site-container" style={{ padding: "96px 0" }}>

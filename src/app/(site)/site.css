@@ -55,8 +55,11 @@
 .site-root img, .site-root svg { max-width: 100%; }
 .site-serif { font-family: var(--font-playfair), Georgia, serif; }
 
-.site-container { max-width: 1320px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
-@media (max-width: 700px) { .site-container { padding-left: 20px; padding-right: 20px; } }
+/* Horizontal gutters use !important so a section's inline `padding: "96px 0"`
+   shorthand can't zero them out — otherwise content hits the screen edge on mobile. */
+.site-container { max-width: 1320px; margin: 0 auto; padding-left: 32px !important; padding-right: 32px !important; }
+@media (max-width: 700px) { .site-container { padding-left: 18px !important; padding-right: 18px !important; } }
+.site-root { overflow-wrap: break-word; }
 
 .site-eyebrow { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
 .site-h2 {
@@ -156,6 +159,31 @@
 .slow-feature .scenic-copy { position: relative; max-width: 600px; }
 .slow-feature h2 { color: #fff; font-family: var(--font-playfair), serif; font-weight: 500; font-size: clamp(40px, 5vw, 70px); line-height: 1.05; margin: 14px 0 0; }
 .slow-feature p { color: #e0edf0; font-size: 15px; line-height: 1.9; max-width: 450px; margin: 24px 0 30px; }
+
+/* ---------- fixed-background parallax band (GeeksforGeeks-style) ---------- */
+/* The image is pinned to the viewport (background-attachment: fixed) so content
+   scrolls over it, giving a layered depth effect. Always dark, so light text. */
+.parallax-band {
+  position: relative;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #041e28; /* fallback while the image loads */
+}
+.parallax-band .parallax-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(4, 30, 40, 0.72), rgba(4, 30, 40, 0.5) 50%, rgba(4, 30, 40, 0.85));
+}
+.parallax-band .parallax-inner { position: relative; z-index: 1; }
+.parallax-band .parallax-inner h2 { color: #f2faff; }
+.parallax-band .parallax-inner p { color: rgba(242, 250, 255, 0.85); }
+/* `background-attachment: fixed` is janky / unsupported on most touch devices,
+   so fall back to a normal scrolling background there. */
+@media (max-width: 900px), (hover: none) {
+  .parallax-band { background-attachment: scroll; }
+}
 
 /* ---------- featured destination cards ----------------------------------- */
 .featured-destination { transition: transform 0.45s, box-shadow 0.45s, border-color 0.45s; }
@@ -303,3 +331,29 @@
 
 @keyframes pulse { 0%, 100% { opacity: 0.25; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.5); } }
 @keyframes kb { from { transform: scale(1.04); } to { transform: scale(1.16); } }
+
+/* ---------- scroll cinema (pinned play + scroll reveal) ------------------- */
+.sc-wrap { position: relative; background: #020c12; }
+.sc-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #020c12; }
+/* the footage sits in a frame that opens from an inset window to full-bleed */
+.sc-frame { position: absolute; overflow: hidden; will-change: inset, border-radius; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+.sc-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+/* cinematic letterbox + darkening so overlaid text always reads */
+.sc-vignette { position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(2,12,18,0.55) 0%, rgba(2,12,18,0.05) 26%, rgba(2,12,18,0.1) 60%, rgba(2,12,18,0.78) 100%),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(2,12,18,0.5) 100%); }
+.sc-caption { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(860px, 88vw);
+  text-align: center; padding: 0 20px; z-index: 2; pointer-events: none; }
+.sc-eyebrow { display: block; font-size: 12.5px; letter-spacing: 0.32em; text-transform: uppercase; font-weight: 600; color: #eaf6ff; text-shadow: 0 2px 16px rgba(2,12,18,0.85); margin-bottom: 16px; }
+.sc-title { font-weight: 600; font-size: clamp(38px, 6.4vw, 86px); line-height: 1.03; margin: 0; color: #f2faff; text-shadow: 0 6px 40px rgba(2,12,18,0.6); }
+.sc-sub { font-size: clamp(15px, 1.8vw, 19px); line-height: 1.7; color: rgba(242,250,255,0.9); margin: 20px auto 0; max-width: 540px; text-shadow: 0 2px 16px rgba(2,12,18,0.7); }
+.sc-hint { position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 12px;
+  font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(242,250,255,0.8); pointer-events: none; }
+.sc-hint-line { width: 1px; height: 46px; background: linear-gradient(rgba(242,250,255,0.9), transparent); animation: sc-hint-slide 1.8s ease-in-out infinite; }
+@keyframes sc-hint-slide { 0% { transform: scaleY(0.3); transform-origin: top; opacity: 0.3; } 50% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0.3); transform-origin: bottom; opacity: 0.3; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-video { transform: none !important; }
+  .sc-hint-line { animation: none; }
+}

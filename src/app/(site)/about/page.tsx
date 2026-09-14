@@ -66,11 +66,10 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Quote band */}
-      <section style={{ position: "relative", height: 520, overflow: "hidden", display: "flex", alignItems: "center", marginBottom: 96 }}>
-        <div data-parallax="0.16" style={{ position: "absolute", inset: "-14% 0", backgroundImage: `url('${W("Diyaluma_Falls.jpg", 1920)}')`, backgroundSize: "cover", backgroundPosition: "center", willChange: "transform" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,30,40,.92), rgba(4,30,40,.45) 70%, rgba(4,30,40,.7))" }} />
-        <div className="site-container" style={{ position: "relative", width: "100%" }}>
+      {/* Quote band — fixed-background parallax (image pinned, content scrolls over) */}
+      <section className="parallax-band" style={{ minHeight: 520, display: "flex", alignItems: "center", marginBottom: 96, backgroundImage: `url('${W("Diyaluma_Falls.jpg", 1920)}')` }}>
+        <span className="parallax-scrim" style={{ background: "linear-gradient(90deg, rgba(4,30,40,.92), rgba(4,30,40,.45) 70%, rgba(4,30,40,.7))" }} />
+        <div className="site-container parallax-inner" style={{ width: "100%" }}>
           <div style={{ maxWidth: 620 }}>
             <div style={{ fontSize: 11, letterSpacing: ".3em", textTransform: "uppercase", color: "#0288D1", marginBottom: 18 }}>Our island, our office</div>
             <blockquote className="site-serif" style={{ margin: 0, fontSize: "clamp(28px,4vw,40px)", lineHeight: 1.32, color: "#F2FAFF", fontStyle: "italic" }}>
