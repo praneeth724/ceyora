@@ -291,6 +291,19 @@
 .site-detail-grid { display: grid; gap: 40px; grid-template-columns: minmax(0, 1fr) 320px; align-items: start; }
 @media (max-width: 860px) { .site-detail-grid { grid-template-columns: 1fr; } }
 
+/* ---------- hero: centre the stats + preview when they stack on mobile --- */
+@media (max-width: 760px) {
+  .hero-bottom {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+    row-gap: 26px !important;
+  }
+  .hero-proof { align-items: center !important; width: 100%; }
+  .hero-preview { align-items: center !important; width: 100%; }
+}
+
 /* ---------- responsive nav ----------------------------------------------- */
 .site-mobile-menu { display: none; }
 @media (max-width: 1024px) {
