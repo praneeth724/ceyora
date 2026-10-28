@@ -5,21 +5,31 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import type { SiteSettings } from "@/lib/site";
-import { ThemeToggle } from "./theme";
+// import { ThemeToggle } from "./theme"; // dark/light toggle hidden for now (light-only)
+import { LangSwitcher } from "./lang-switcher";
+import type { Dict, Locale } from "@/lib/i18n";
 
-const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/destinations", label: "Destinations" },
-  { href: "/categories", label: "Tour Categories" },
-  { href: "/packages", label: "Packages" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/blog", label: "Journal" },
-  { href: "/about", label: "About" },
-];
-
-export function Navbar({ settings }: { settings: SiteSettings }) {
+export function Navbar({
+  settings,
+  locale,
+  dict,
+}: {
+  settings: SiteSettings;
+  locale: Locale;
+  dict: Dict["nav"];
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  const LINKS = [
+    { href: "/", label: dict.home },
+    { href: "/destinations", label: dict.destinations },
+    { href: "/categories", label: dict.categories },
+    { href: "/packages", label: dict.packages },
+    { href: "/gallery", label: dict.gallery },
+    { href: "/blog", label: dict.journal },
+    { href: "/about", label: dict.about },
+  ];
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -101,9 +111,9 @@ export function Navbar({ settings }: { settings: SiteSettings }) {
         </nav>
 
         <div className="site-desktop-nav" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <ThemeToggle />
+          <LangSwitcher locale={locale} />
           <Link href="/contact" className="btn-ghost" style={{ padding: "10px 18px" }}>
-            Plan your trip ↗
+            {dict.planTrip} ↗
           </Link>
         </div>
 
@@ -158,7 +168,7 @@ export function Navbar({ settings }: { settings: SiteSettings }) {
           ))}
           <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
             <div style={{ flex: 1, display: "flex" }}>
-              <ThemeToggle />
+              <LangSwitcher locale={locale} block />
             </div>
             <Link
               href="/contact"
@@ -166,7 +176,7 @@ export function Navbar({ settings }: { settings: SiteSettings }) {
               className="btn-primary"
               style={{ flex: 1, justifyContent: "center" }}
             >
-              Plan your trip
+              {dict.planTrip}
             </Link>
           </div>
         </div>

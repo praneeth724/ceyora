@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 import { Sun, Moon } from "lucide-react";
 
 type Theme = "dark" | "light";
 const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
-  theme: "dark",
+  theme: "light",
   toggle: () => {},
 });
 
@@ -13,33 +13,16 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
-/** Wraps the whole public site, owns the `.site-root` element + theme state. */
+/**
+ * Wraps the whole public site and owns the `.site-root` element.
+ * Theme switching is disabled for now — the site is light-only. To re-enable
+ * dark mode, restore the useState/localStorage logic below and un-comment the
+ * <ThemeToggle /> usages in the navbar.
+ */
 export function SiteThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("ceyora-theme") as Theme | null;
-      if (saved === "light" || saved === "dark") setTheme(saved);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  function toggle() {
-    setTheme((t) => {
-      const next = t === "dark" ? "light" : "dark";
-      try {
-        localStorage.setItem("ceyora-theme", next);
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-  }
-
+  const theme: Theme = "light";
   return (
-    <ThemeContext.Provider value={{ theme, toggle }}>
+    <ThemeContext.Provider value={{ theme, toggle: () => {} }}>
       <div className="site-root" data-theme={theme}>
         {children}
       </div>
